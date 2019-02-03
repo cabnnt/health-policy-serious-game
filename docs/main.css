@@ -1,0 +1,23 @@
+#about-us{
+    box-sizing: content-box;
+    float: right;
+}
+#nav{
+    background-color: rgb(4, 178, 221);
+}
+main.container-fluid{
+    width: 45%;
+    float: left;
+}
+aside#about-us.container{
+    width: 50%;
+    float: left;
+}
+@media only screen and (max-width: 600px){
+    main.container-fluid{
+        width: 100%;
+    }
+    aside#about-us.container{
+        width: 100%;
+    }
+}
