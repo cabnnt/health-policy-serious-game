@@ -1,9 +1,24 @@
 .doctor{
+    font-size: 2rem;
     text-align: center;
     font-family: 'Lato', sans-serif;
 }
-.player > .doctor{
-    color: lightblue;
+.fa-briefcase-medical{
+    color: rgb(123,175,212);
+}
+.fa-band-aid{
+    color: sienna;
+}
+.fa-heartbeat{
+    color: maroon;
+}
+.player{
+    font-size: 1.5rem;
+}
+#public-health-logo {
+    width: 100%;
+    grid-column: 1/2;
+    grid-row:1;
 }
 #countdown{
     text-align: center;
@@ -17,6 +32,7 @@
     color: red;
 }
 main{
+    font-size: 2rem;
     text-align: center;
     font-family: 'Chonburi', cursive;
     grid-column: 2/3;
@@ -25,6 +41,8 @@ main{
     border-color: lightblue;
 }
 body{
+    background-image: url("pink_rice.png");
+    background-repeat: repeat;
     height: 100vh;
     display: grid;
     grid-gap:10px;
