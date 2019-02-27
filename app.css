@@ -1,0 +1,49 @@
+.doctor{
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+}
+.player > .doctor{
+    color: lightblue;
+}
+#countdown{
+    text-align: center;
+    border-style: solid;
+    font-family: 'Passion One', cursive;
+    font-size: 1.5em;
+    grid-column: 3;
+    grid-row: 1;
+}
+#time{
+    color: red;
+}
+main{
+    text-align: center;
+    font-family: 'Chonburi', cursive;
+    grid-column: 2/3;
+    grid-row: 2;
+    border-style: groove;
+    border-color: lightblue;
+}
+body{
+    height: 100vh;
+    display: grid;
+    grid-gap:10px
+    grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 25% 50% 25%;
+}
+#one{
+    grid-column: 1/2;
+    grid-row: 2/3;
+}
+#two{
+    grid-column: 2/3;
+    grid-row: 1/2;
+}
+#three{
+    grid-column: 3;
+    grid-row: 2/3;
+}
+#four{
+    grid-column: 2/3;
+    grid-row: 3;
+}
