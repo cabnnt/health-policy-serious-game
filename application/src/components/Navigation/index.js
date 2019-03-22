@@ -35,10 +35,13 @@ const UnauthorizedNavigation = () => (
     <li>
       <Link to={ROUTES.SIGN_IN}>Sign in</Link>
     </li>
+    <li>
+      <Link to={ROUTES.SIGN_UP}>Sign up</Link>
+    </li>
     <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+    <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
     <Route path={ROUTES.LANDING} component={Home} />
   </ul>
 );
 
 export default Navigation;
-
