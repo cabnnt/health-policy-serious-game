@@ -67,17 +67,15 @@ class Landing extends Component {
 
   onSubmit = event => {
     const { email, password } = this.state;
+    event.preventDefault();
 
     this.props.firebase
       .signIn(email, password)
       .then(() => {
         this.setState({ signingIn: true });
-        this.setState({ signingIn: false });
       }).catch(error => {
         this.setState({ error });
       });
-    
-    event.preventDefault();
   }
 
   onChange = event => {
@@ -93,7 +91,7 @@ class Landing extends Component {
 
     return(
       this.state.signingIn
-        ? <Redirect to={ { pathname: ROUTES.HOME, state: { signingIn: false } } } />
+        ? <Redirect to={ ROUTES.HOME } />
         : <main className={ classes.main }>
             <Paper className={ classes.paper }>
               <Avatar className={ classes.avatar }>

@@ -26,11 +26,13 @@ class SignOutButtonBase extends Component {
   }
 
   render() {
-    return(this.state.signingOut
-      ? <Redirect to={ ROUTES.LANDING } />
-      : <button type="button" onClick={ this.signOut }>
-          Sign out
-        </button>);
+    return(
+      this.state.signingOut
+        ? <Redirect to={ ROUTES.LANDING } />
+        : <button type="button" onClick={ this.signOut }>
+            Sign out
+          </button>
+    );
   }
 }
 
