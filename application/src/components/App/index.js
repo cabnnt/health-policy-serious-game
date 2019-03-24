@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 
+import * as ROUTES from '../../constants/routes';
+import Home from '../Home';
+import Account from '../Account';
+import SignUp from '../SignUp';
 import Navigation from '../Navigation';
 import { withFirebase } from '../Firebase';
 
@@ -31,9 +35,7 @@ class App extends Component {
     return(
       <Router>
         <div>
-          <Navigation authUser = { this.state.authUser }/>
-          
-          <hr/>
+          <Navigation authUser = { this.state.authUser } />
         </div>
       </Router>
     );
