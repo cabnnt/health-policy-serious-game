@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-import withStyles from '@material-ui/core/styles/withStyles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Toolbar from '@material-ui/core/Toolbar';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import NavigationStyles from '../../styles/navigationStyles';
 
-const Menu = [
+import AppBar from '@material-ui/core/AppBar';
+import Grid from '@material-ui/core/Grid';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
+
+const MenuTabs = [
   {
     label: "Home",
     pathname: "/home"
@@ -24,57 +26,7 @@ const Menu = [
   }
 ];
 
-const styles = theme => ({
-  appBar: {
-    position: 'relative',
-    boxShadow: 'none',
-    borderBottom: `1px solid ${theme.palette.grey['100']}`,
-    backgroundColor: 'white',
-
-  },
-  inline: {
-    display: 'inline'
-  },
-  flex: {
-    display: 'flex',
-    [theme.breakpoints.down('sm')]: {
-      display: 'flex',
-      justifyContent: 'space-evenly',
-      alignItems: 'center'
-    }
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit'
-  },
-  tagline: {
-    display: 'inline-block',
-    marginLeft: 10,
-    [theme.breakpoints.up('md')]: {
-      paddingTop: '0.8em'
-    }
-  },
-  iconContainer: {
-    display: 'none',
-    [theme.breakpoints.down('sm')]: {
-      display: 'block'
-    }
-  },
-  iconButton: {
-    float: 'right'
-  },
-  tabContainer: {
-    marginLeft: 32,
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    }
-  },
-  tabItem: {
-    paddingTop: 20,
-    paddingBottom: 20,
-    minWidth: 'auto'
-  }
-})
+const styles = NavigationStyles;
 
 class Navigation extends Component {
   constructor(props) {
@@ -93,13 +45,10 @@ class Navigation extends Component {
       case "/":
       case "/home":
         return 0;
-        break;
       case "/account":
         return 1;
-        break;
       case "/signout":
         return 2;
-        break;
     }
   }
 
@@ -127,7 +76,7 @@ class Navigation extends Component {
                         onChange={ this.handleChange }
                       >
                         {
-                          Menu.map((item, index) => (
+                          MenuTabs.map((item, index) => (
                             <Tab
                               key={ index }
                               component={ Link }

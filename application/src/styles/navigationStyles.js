@@ -1,0 +1,53 @@
+const NavigationStyles = theme => ({
+  appBar: {
+    position: 'relative',
+    boxShadow: 'none',
+    borderBottom: `1px solid ${theme.palette.grey['100']}`,
+    backgroundColor: 'white',
+
+  },
+  inline: {
+    display: 'inline'
+  },
+  flex: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      alignItems: 'center'
+    }
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit'
+  },
+  tagline: {
+    display: 'inline-block',
+    marginLeft: 10,
+    [theme.breakpoints.up('md')]: {
+      paddingTop: '0.8em'
+    }
+  },
+  iconContainer: {
+    display: 'none',
+    [theme.breakpoints.down('sm')]: {
+      display: 'block'
+    }
+  },
+  iconButton: {
+    float: 'right'
+  },
+  tabContainer: {
+    marginLeft: 32,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
+  },
+  tabItem: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    minWidth: 'auto'
+  }
+})
+
+export default NavigationStyles;
