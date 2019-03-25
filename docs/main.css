@@ -5,6 +5,9 @@
 #nav{
     background-color: rgb(4, 178, 221);
 }
+.mockup-image {
+  width: 500px;
+}
 main.container-fluid{
     width: 45%;
     float: left;
