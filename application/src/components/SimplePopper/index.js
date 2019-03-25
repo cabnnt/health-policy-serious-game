@@ -45,7 +45,7 @@ class SimplePopper extends React.Component {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper>
-                <Typography className={classes.typography}>The content of the Popper.</Typography>
+                <Typography className={classes.typography}>Minor Treatment : $4 / Major Treatment $10</Typography>
               </Paper>
             </Fade>
           )}
