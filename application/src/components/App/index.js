@@ -7,6 +7,7 @@ import Landing from '../Landing';
 import SignUp from '../SignUp';
 import Navigation from '../Navigation';
 import { withFirebase } from '../Firebase';
+import SignOutButton from '../SignOut';
 
 class App extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class App extends Component {
           <Route path={ ROUTES.HOME } component={ Home } />
           <Route path={ ROUTES.SIGN_IN } component={ Landing } />
           <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
+          <Route path='/signout' component={ SignOutButton } />
         </div>
       </Router>
     );
