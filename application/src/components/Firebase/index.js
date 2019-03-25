@@ -1,7 +1,13 @@
-import app from 'firebase/app';
+import app, {
+  firestore
+} from 'firebase';
 import 'firebase/auth';
+import 'firebase/firestore';
 
-import FirebaseContext, { withFirebase } from './context';
+// import firestore from 'firebase/firebase-firestore';
+import FirebaseContext, {
+  withFirebase
+} from './context';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -11,20 +17,33 @@ const config = {
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 };
-
 export default class Firebase {
+
   constructor() {
     app.initializeApp(config);
-
     this.auth = app.auth();
+    this.db = firestore();
+    this.db.collection("users").get().then(function (querySnapshot) {
+      var users = [];
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        users.push(doc.get('username'));
+        
+      });
+    });
   }
 
-  createUser = (email, password) =>
+  createUser = (username, email, password) => {
     this.auth.createUserWithEmailAndPassword(email, password);
-  
+    return this.db.collection('users').add({
+      username,
+      email,
+    });
+  }
   signIn = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
-  
+
   signOut = () => this.auth.signOut();
 
   resetPassword = (email) => this.auth.sendPasswordResetEmail(email);
@@ -32,4 +51,7 @@ export default class Firebase {
   updatePassword = (password) => this.auth.currentUser.updatePassword(password);
 }
 
-export { FirebaseContext, withFirebase };
+export {
+  FirebaseContext,
+  withFirebase
+};
