@@ -16,6 +16,7 @@ import * as ROUTES from '../../constants/routes';
 import FormStyles from '../../styles/formStyles';
 
 const INITIAL_STATE = {
+  username: '',
   email: '',
   passwordOne: '',
   passwordTwo: '',
@@ -31,12 +32,12 @@ class SignUp extends Component {
   }
 
   onSubmit = event => {
-    const { email, passwordOne } = this.state;
+    const { username, email, passwordOne } = this.state;
 
     event.preventDefault();
 
     this.props.firebase
-      .createUser(email, passwordOne)
+      .createUser(username, email, passwordOne)
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
@@ -53,15 +54,17 @@ class SignUp extends Component {
   render() {
     const classes = this.props.classes;
     const {
+      username,
       email,
       passwordOne,
       passwordTwo,
-      error,
+      error
     } = this.state;
     const isInvalid = (
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
-      email === ''
+      email === '' ||
+      username === ''
     );
 
     return (
@@ -74,6 +77,18 @@ class SignUp extends Component {
             Create account
           </Typography>
           <form onSubmit={ this.onSubmit } className={ classes.form }>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="username">
+                Username
+              </InputLabel>
+              <Input
+                id="username"
+                name="username"
+                value={ username }
+                onChange={ this.onChange }
+                autoFocus
+              />
+            </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">
                 Email address
