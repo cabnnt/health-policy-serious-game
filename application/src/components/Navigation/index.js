@@ -6,7 +6,7 @@ import Landing from '../Landing';
 import SignOutButton from '../SignOut';
 
 const Navigation = ({ authUser }) => (
-  <div>{ authUser ? <AuthorizedNavigation /> : <UnauthorizedNavigation /> }</div>
+  <div>{ authUser ? <AuthorizedNavigation /> : null }</div>
 );
 
 const AuthorizedNavigation = () => (
@@ -21,10 +21,6 @@ const AuthorizedNavigation = () => (
       <SignOutButton />
     </li>
   </ul>
-);
-
-const UnauthorizedNavigation = () => (
-  <Landing />
 );
 
 export default Navigation;

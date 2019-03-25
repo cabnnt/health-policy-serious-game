@@ -74,7 +74,7 @@ class Landing extends Component {
               <form onSubmit={ this.onSubmit } className={ classes.form }>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="email">
-                    Email Address
+                    Email address
                   </InputLabel>
                   <Input
                     id="email"
@@ -108,7 +108,7 @@ class Landing extends Component {
                   Sign in
                 </Button>
                 <Typography color="textSecondary" variant="caption">
-                  Not registered? <Link to={ ROUTES.SIGN_UP }>Create an account.</Link>
+                  <br />Not registered? <Link to={ ROUTES.SIGN_UP }>Create an account.</Link>
                 </Typography>
               </form>
               { error &&
