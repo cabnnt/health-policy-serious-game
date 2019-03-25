@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import FaceOutlinedIcon from '@material-ui/icons/FaceOutlined';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
+
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import FormStyles from '../../styles/formStyles';
 
 const INITIAL_STATE = {
   username: '',
@@ -12,14 +23,9 @@ const INITIAL_STATE = {
   error: null,
 };
 
-const SignUpPage = () => (
-  <div>
-    <h1>Sign Up</h1>
-    <SignUpForm />
-  </div>
-);
+const styles = FormStyles;
 
-class SignUpFormBase extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
@@ -28,8 +34,10 @@ class SignUpFormBase extends Component {
   onSubmit = event => {
     const { username, email, passwordOne } = this.state;
 
+    event.preventDefault();
+
     this.props.firebase
-      .createUser(username,email, passwordOne)
+      .createUser(username, email, passwordOne)
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
@@ -37,8 +45,6 @@ class SignUpFormBase extends Component {
       .catch(error => {
         this.setState({ error });
       });
-
-    event.preventDefault();
   }
 
   onChange = event => {
@@ -46,68 +52,104 @@ class SignUpFormBase extends Component {
   };
 
   render() {
+    const classes = this.props.classes;
     const {
       username,
       email,
       passwordOne,
       passwordTwo,
-      error,
+      error
     } = this.state;
-
-    const isInvalid =
+    const isInvalid = (
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
       email === '' ||
-      username === '';
+      username === ''
+    );
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="username"
-          value={username}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Full Name"
-        />
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign Up
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <main className={ classes.main }>
+        <Paper className={ classes.paper }>
+          <Avatar className={ classes.avatar }>
+            <FaceOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Create account
+          </Typography>
+          <form onSubmit={ this.onSubmit } className={ classes.form }>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="username">
+                Username
+              </InputLabel>
+              <Input
+                id="username"
+                name="username"
+                value={ username }
+                onChange={ this.onChange }
+                autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">
+                Email address
+              </InputLabel>
+              <Input
+                id="email"
+                name="email"
+                value={ email }
+                onChange={ this.onChange }
+                autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="passwordOne">
+                Password
+              </InputLabel>
+              <Input
+                id="passwordOne"
+                name="passwordOne"
+                value={ passwordOne }
+                onChange={ this.onChange }
+                type="password"
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="passwordTwo">
+                Confirm password
+              </InputLabel>
+              <Input
+                id="passwordTwo"
+                name="passwordTwo"
+                value={ passwordTwo }
+                onChange={ this.onChange }
+                type="password"
+              />
+            </FormControl>
+            <Button
+              disabled={ isInvalid }
+              type="submit"
+              onClick={ this.onSubmit }
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={ classes.submit }
+            >
+              Create account
+            </Button>
+            <Typography color="textSecondary" variant="caption">
+              <br />Already registered? <Link to={ ROUTES.SIGN_IN }>Sign in.</Link>
+            </Typography>
+          </form>
+          { error &&
+              <Typography 
+                color="error"
+                variant="body2">
+                <br />{ error.message }
+              </Typography> }
+        </Paper>
+      </main>
     );
   }
 }
 
-const SignUpLink = () => (
-  <p>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
-);
-
-const SignUpForm = withRouter(withFirebase(SignUpFormBase));
-
-export default SignUpPage;
-
-export { SignUpForm, SignUpLink };
+export default withRouter(withFirebase(withStyles(styles)(SignUp)));

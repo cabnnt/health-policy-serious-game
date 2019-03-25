@@ -1,60 +1,99 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
-import * as ROUTES from '../../constants/routes';
-import Home from '../Home';
-import SignUpPage from '../SignUp';
-import SignInPage from '../SignIn';
-import SignOutButton from '../SignOut';
-import Lobby from '../Lobby';
+import NavigationStyles from '../../styles/navigationStyles';
 
-const Navigation = ({ authUser }) => (
-  <div>{ authUser ? <AuthorizedNavigation authUser = {true}/> : <UnauthorizedNavigation authUser = {false} /> }</div>
-);
+import AppBar from '@material-ui/core/AppBar';
+import Grid from '@material-ui/core/Grid';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-class AuthorizedNavigation extends React.Component {
-  constructor(props){
-    super(props);
-    this.state ={
-      authUser: this.props.authUser,
-    };
-    // this.state= this.authUser;
+const MenuTabs = [
+  {
+    label: "Home",
+    pathname: "/home"
+  },
+  {
+    label: "Account",
+    pathname: "/account"
+  },
+  {
+    label: "Sign out",
+    pathname: "/signout"
   }
-  render(){
-    return <div>
-      <ul>
-        <li>
-          <Link to={ROUTES.HOME}>Home</Link>
-        </li>
-        <li>
-          <Link to={ROUTES.ACCOUNT}>Account</Link>
-        </li>
-        <li>
-          <SignOutButton />
-        </li>
-        <Route path={ROUTES.HOME} component={Home} />
-        <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-      </ul>
-      <Lobby authUser={this.state}></Lobby>
-    </div>
+];
+
+const styles = NavigationStyles;
+
+class Navigation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: 0 };
+  }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  current = () => {
+    const currentPath = this.props.location.pathname;
+
+    switch (currentPath) {
+      case "/":
+      case "/home":
+        return 0;
+      case "/account":
+        return 1;
+      case "/signout":
+        return 2;
+    }
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      this.props.authUser ?
+        <AppBar position="absolute" color="default" className={ classes.appBar }>
+          <Toolbar>
+              <Grid container spacing={ 24 } alignItems="baseline">
+                <Grid item xs={ 12 } className={ classes.flex }>
+                    <div className={ classes.inline }>
+                      <Typography variant="h6" color="inherit" noWrap>
+                        <Link to='/' className={ classes.link }>
+                          <span className={ classes.tagline }>Health Policy</span>
+                        </Link>
+                      </Typography>
+                    </div>
+                    <div className={ classes.tabContainer }>
+                      <Tabs
+                        value={ this.current() || this.state.value }
+                        indicatorColor="primary"
+                        textColor="primary"
+                        onChange={ this.handleChange }
+                      >
+                        {
+                          MenuTabs.map((item, index) => (
+                            <Tab
+                              key={ index }
+                              component={ Link }
+                              to={{ pathname: item.pathname }}
+                              classes={{ root: classes.tabItem }}
+                              label={ item.label } 
+                            />
+                          ))
+                        }
+                      </Tabs>
+                    </div>
+                </Grid>
+              </Grid>
+          </Toolbar>
+        </AppBar> : null
+    )
   }
 }
 
-const UnauthorizedNavigation = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.SIGN_IN}>Sign in</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.SIGN_UP}>Sign up</Link>
-    </li>
-    <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-    <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-    <Route path={ROUTES.LANDING} component={Home} />
-  </ul>
-);
-
-export default Navigation;
+export default withRouter(withStyles(styles)(Navigation))

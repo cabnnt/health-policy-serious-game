@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 
+import * as ROUTES from '../../constants/routes';
+import Home from '../Home';
+import Landing from '../Landing';
+import SignUp from '../SignUp';
 import Navigation from '../Navigation';
 import { withFirebase } from '../Firebase';
+import SignOutButton from '../SignOut';
 
 class App extends Component {
   constructor(props) {
@@ -28,12 +33,23 @@ class App extends Component {
   }
 
   render() {
+    const authUser = this.state.authUser;
+
     return(
       <Router>
+        <Navigation authUser={ authUser }/>
         <div>
-          <Navigation authUser = { this.state.authUser }/>
-          
-          <hr/>
+          <Route
+            exact
+            path={ ROUTES.LANDING }
+            render={
+              () => authUser
+                ? <Home />
+                : <Landing /> } />
+          <Route path={ ROUTES.HOME } component={ Home } />
+          <Route path={ ROUTES.SIGN_IN } component={ Landing } />
+          <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
+          <Route path='/signout' component={ SignOutButton } />
         </div>
       </Router>
     );
