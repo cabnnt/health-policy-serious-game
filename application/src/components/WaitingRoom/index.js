@@ -1,33 +1,41 @@
 import React from 'react';
 import 'firebase/firestore';
 import { firestore } from 'firebase';
-export default class WaitingRoom extends React.Component {
-    constructor(props){
-        super(props);
-        this.db = firestore();
-        this.state = {
-            users: ( async function(){
-                await createUserList();
-        })}
-    }
 
-    render(){
-        return <div>
-            <ul>
-                <h2>This is where the users would go</h2>
-                {/* {this.state.users.map(user=>{
-                    return <li>{user}</li>
-                })} */}
-            </ul>
-        </div>
-    }
+const INITIAL_STATE = { users: [] };
+
+export default class WaitingRoom extends React.Component {
+  constructor(props){
+    super(props);
+    this.db = firestore();
+    this.state = { ...INITIAL_STATE };
+  }
+
+  componentDidMount() {
+    firestore().collection('users').get()
+      .then(
+        collection => {
+          collection.forEach(
+            document => this.addUser(document.get('username'))
+          )
+        }
+      );
+  }
+
+  addUser(username) {
+    this.setState({
+      users: this.state.users.concat(username)
+    })
+  }
+
+  render(){
+    return <div>
+      <ul>
+        <h2>Users</h2>
+        {
+          this.state.users.map((username, index) => <li key={`user-${index}`}>{username}</li>)
+        }
+      </ul>
+    </div>
+  }
 };
-async function createUserList(){
-    var usernames = [];
-    const users = await firestore().collection('users').get().then((col)=>{
-        col.forEach(doc=>{
-            usernames.push(doc.get('username'));
-        })
-    });
-    return usernames;
-}
