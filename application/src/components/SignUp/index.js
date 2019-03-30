@@ -5,9 +5,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import FaceOutlinedIcon from '@material-ui/icons/FaceOutlined';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 
@@ -16,6 +20,7 @@ import * as ROUTES from '../../constants/routes';
 import FormStyles from '../../styles/formStyles';
 
 const INITIAL_STATE = {
+  role: '',
   username: '',
   email: '',
   passwordOne: '',
@@ -32,12 +37,12 @@ class SignUp extends Component {
   }
 
   onSubmit = event => {
-    const { username, email, passwordOne } = this.state;
+    const { role, username, email, passwordOne } = this.state;
 
     event.preventDefault();
 
     this.props.firebase
-      .createUser(username, email, passwordOne)
+      .createUser(role, username, email, passwordOne)
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
@@ -54,6 +59,7 @@ class SignUp extends Component {
   render() {
     const classes = this.props.classes;
     const {
+      role,
       username,
       email,
       passwordOne,
@@ -77,6 +83,19 @@ class SignUp extends Component {
             Create account
           </Typography>
           <form onSubmit={ this.onSubmit } className={ classes.form }>
+            <FormControl margin="normal" required fullWidth>
+              <FormLabel component="legend">Are you a student or a teacher?</FormLabel>
+              <RadioGroup
+                aria-label="Role"
+                name="role"
+                className={ classes.role }
+                value={ this.state.role }
+                onChange={ this.onChange }
+              >
+                <FormControlLabel value="student" control={<Radio />} label="Student" />
+                <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
+              </RadioGroup>
+            </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="username">
                 Username

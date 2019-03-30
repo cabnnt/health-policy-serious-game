@@ -23,18 +23,12 @@ export default class Firebase {
     app.initializeApp(config);
     this.auth = app.auth();
     this.db = firestore();
-    this.db.collection("users").get().then(function (querySnapshot) {
-      var users = [];
-      querySnapshot.forEach(function (doc) {
-        users.push(doc.get('username'));
-        
-      });
-    });
   }
 
-  createUser = (username, email, password) => {
+  createUser = (role, username, email, password) => {
     this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').add({
+      role,
       username,
       email,
     });

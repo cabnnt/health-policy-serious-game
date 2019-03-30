@@ -28,6 +28,9 @@ const FormStyles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
+  role: {
+    margin: `${theme.spacing.unit}px 0`,
+  }
 });
 
 export default FormStyles;
