@@ -25,17 +25,25 @@ export default class WaitingRoom extends React.Component {
   }
 
   addUser(username) {
-    this.setState({
-      users: this.state.users.concat(username)
-    })
+    let { users } = this.state;
+
+    if (!users.includes(username)) {
+      this.setState({
+        users: users.concat(username)
+      })
+    }
   }
 
   render(){
+    let { users } = this.state;
+
     return <div>
       <ul>
         <h2>Users</h2>
         {
-          this.state.users.map((username, index) => <li key={`user-${index}`}>{username}</li>)
+          users
+            .sort()
+            .map((username, index) => <li key={`user-${index}`}>{username}</li>)
         }
       </ul>
     </div>
