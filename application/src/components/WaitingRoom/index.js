@@ -2,24 +2,26 @@ import React from 'react';
 import 'firebase/firestore';
 import { firestore } from 'firebase';
 
-const INITIAL_STATE = { users: [] };
-
 export default class WaitingRoom extends React.Component {
   constructor(props){
     super(props);
     this.db = firestore();
-    this.state = { ...INITIAL_STATE };
+    this.listener = null;
+    this.state = { users: [] };
   }
 
   componentDidMount() {
-    firestore().collection('users').get()
-      .then(
-        collection => {
-          collection.forEach(
-            document => this.addUser(document.get('username'))
-          )
-        }
-      );
+    this.listener = firestore()
+      .collection('users')
+      .onSnapshot(collection => {
+        collection.forEach(
+          document => this.addUser(document.get('username'))
+        )
+      });
+  }
+
+  componentWillUnmount() {
+    this.listener();
   }
 
   addUser(username) {

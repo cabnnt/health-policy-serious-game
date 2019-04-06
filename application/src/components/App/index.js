@@ -18,11 +18,13 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.listener = this.props.firebase.auth.onAuthStateChanged(
       authUser => {
+        let email = authUser ? authUser.email : null;
+        let user = this.props.firebase.fetchUserFromFirestore(email);
         authUser
-          ? this.setState({ authUser })
+          ? this.setState({ authUser: user })
           : this.setState({ authUser: null });
       }
     );

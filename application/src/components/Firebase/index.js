@@ -25,6 +25,25 @@ export default class Firebase {
     this.db = firestore();
   }
 
+  async fetchUserFromFirestore(email) {
+    if (!email) {
+      return null;
+    }
+
+    let user = null;
+    let response = await this.db
+      .collection('users')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+    
+    response.forEach(user_record => {
+      user = { id: user_record.id, ...user_record.data() };
+    });
+    
+    return user;
+  }
+
   createUser = (role, username, email, password) => {
     this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').add({
