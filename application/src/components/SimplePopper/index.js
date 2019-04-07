@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
@@ -6,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
+import Queue from '../Queue';
 
 const styles = theme => ({
   typography: {
@@ -21,6 +23,8 @@ class SimplePopper extends React.Component {
   state = {
     anchorEl: null,
     open: false,
+    renderQueue: false,
+    inQueue: false
   };
 
   handleClick = event => {
@@ -31,6 +35,24 @@ class SimplePopper extends React.Component {
     }));
   };
 
+  handleClickJoinQueue = event => {
+    this.setState(state => ({
+      renderQueue: true,
+      open: !state.open
+    }));
+
+
+    //this.enterQueue()
+
+  };
+
+  //enterQueue() {
+    //this.setState({
+      //users: this.concat("username")
+    //})
+   // alert("we made it")
+  //}
+//this.addUser(document.get('username')
   render() {
     const { classes } = this.props;
     const { anchorEl, open } = this.state;
@@ -45,11 +67,18 @@ class SimplePopper extends React.Component {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper>
-                <Typography className={classes.typography}>Minor Treatment : $4 / Major Treatment $10</Typography>
+                <Typography className={classes.typography}>Minor Treatment : $4 / Major Treatment $10 <Button onClick={this.handleClickJoinQueue}>Join Queue</Button> </Typography>
+                
               </Paper>
             </Fade>
           )}
         </Popper>
+          { 
+            this.state.renderQueue ? <Queue /> : null
+             }
+
+
+        
       </div>
     );
   }
