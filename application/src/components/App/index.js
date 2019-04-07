@@ -41,7 +41,7 @@ class App extends Component {
     return(
       <AuthorizationContext.Provider value={ authUser }>
         <Router>
-          <Navigation />
+          { authUser ? <Navigation /> : null }
           <div>
             <Route
               exact
