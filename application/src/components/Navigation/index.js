@@ -61,9 +61,10 @@ class Navigation extends Component {
 
   render() {
     const { classes } = this.props;
+    const { authUser } = this.props;
 
     return (
-      this.props.authUser ?
+      authUser ?
         <AppBar position="absolute" color="default" className={ classes.appBar }>
           <Toolbar>
               <Grid container spacing={ 24 } alignItems="baseline">

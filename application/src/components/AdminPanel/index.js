@@ -10,6 +10,7 @@ export default class AdminPanel extends React.Component{
       return <div>
           <h2>AdminPanel</h2>
           <TimeInput mode='12h' onChange={(time)=> this.handleChange(time)}/>
+          <div>{this.state.time_remaining}</div>
       </div>
     }
     handleChange(params) {
@@ -21,6 +22,7 @@ export default class AdminPanel extends React.Component{
       var minutes = duration.asMinutes();
       console.log(duration);
       console.log(minutes);
+      this.setState({time_remaining: minutes});
       
     }
   }
