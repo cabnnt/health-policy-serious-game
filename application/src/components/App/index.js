@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import * as ROUTES from '../../constants/routes';
+import AdminPanel from '../AdminPanel';
 import Home from '../Home';
 import Landing from '../Landing';
 import SignUp from '../SignUp';
@@ -53,6 +54,7 @@ class App extends Component {
             <Route path={ ROUTES.HOME } component={ Home } />
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
+            <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
             <Route path='/signout' component={ SignOutButton } />
           </div>
         </Router>

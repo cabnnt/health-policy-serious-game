@@ -22,6 +22,10 @@ const MenuTabs = [
     pathname: "/account"
   },
   {
+    label: "Admin",
+    pathname: "/admin"
+  },
+  {
     label: "Sign out",
     pathname: "/signout"
   }
@@ -48,8 +52,10 @@ class Navigation extends Component {
         return 0;
       case "/account":
         return 1;
-      case "/signout":
+      case "/admin":
         return 2;
+      case "/signout":
+        return 3;
     }
   }
 
