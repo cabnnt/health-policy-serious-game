@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
+import SimpleTable from '../SimpleTable';
+import Typography from '@material-ui/core/Typography';
 import moment from 'moment';
 
 class CurrentGamesList extends Component {
@@ -11,12 +13,12 @@ class CurrentGamesList extends Component {
     this.currentGamesListener = null;
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { firebase } = this.props;
     const firestore = firebase.db;
     const since = moment().startOf('day').toDate();
     
-    this.currentGamesListener = await firestore
+    this.currentGamesListener = firestore
       .collection('games')
       .where('created_at', '>=', since)
       .orderBy('created_at', 'desc')
@@ -34,9 +36,10 @@ class CurrentGamesList extends Component {
   addGame = gameRecord => {
     const { games } = this.state;
     const game = { id: gameRecord.id, ...gameRecord.data() };
+    const gameIds = games.map(game => game.id);
     
-    if (!games.includes(game)) {
-      this.setState({ games: [ ...games].concat(game) })
+    if (!gameIds.includes(game.id)) {
+      this.setState({ games: games.concat(game) })
     }
   }
 
@@ -44,16 +47,23 @@ class CurrentGamesList extends Component {
     const { games } = this.state;
 
     return (
-      this.currentGamesListener && !games.length
-        ? 'No current games found.'
-        : <ul>
-            {
+      <div>
+        <Typography style={ { margin: '10px' } } variant='h5'>Current games</Typography>
+        {
+          this.currentGamesListener && !games.length
+            ? 'No current games found.'
+            : (
               !games.length
                 ? 'Loading games...'
-                : games
-                    .map(({ id }, index) => <li key={`game-${index}`}>{id}</li>)
-            }
-          </ul>
+                : <SimpleTable
+                    collection={ games }
+                    attributes={ ['id'] }
+                    headers={
+                      { id: 'ID' }
+                    } />
+            )
+        }
+      </div>
     );
   }
 }

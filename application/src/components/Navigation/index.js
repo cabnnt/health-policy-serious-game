@@ -21,14 +21,17 @@ class Navigation extends Component {
     
     const { authUser } = this.props;
     const showAdmin = authUser.role === 'teacher';
+    const gamesListLabel = showAdmin ? 'Current games' : 'Join game';
 
     this.menuTabs = [
-      showAdmin
-        ? { label: 'Create game', pathnames: ['/admin', '/'] }
-        : { label: 'Join game', pathnames: ['/home', '/'] },
+      { label: gamesListLabel, pathnames: ['/home', '/'] },
       { label: 'Account', pathnames: ['/account'] },
       { label: 'Sign Out', pathnames: ['/signout'] }
     ]
+
+    if (showAdmin) {
+      this.menuTabs.unshift({ label: 'Create game', pathnames: ['/admin'] })
+    }
   }
 
   handleChange = (event, value) => {
