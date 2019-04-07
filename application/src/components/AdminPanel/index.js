@@ -26,9 +26,9 @@ class AdminPanel extends React.Component{
       const { classes } = this.props;
       
       return (
-        <main className={ classes.main }>
+        <div>
           <TimeInput mode='12h' onChange={ time => this.handleChange(time) }/>
-          { 
+          {
             this.state.timeRemaining && this.state.timeRemaining >= 0
               ? <div>Time for round: { this.state.timeRemaining }</div>
               : <div>Please enter a valid time</div>
@@ -45,7 +45,7 @@ class AdminPanel extends React.Component{
                   : 'Create new game')
             }
           </Button>
-        </main>
+        </div>
       )
     }
     

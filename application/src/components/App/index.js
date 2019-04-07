@@ -25,6 +25,7 @@ class App extends Component {
       async authUser => {
         let email = authUser ? authUser.email : null;
         let user = await this.props.firebase.fetchUserFromFirestore(email);
+
         authUser
           ? this.setState({ authUser: user })
           : this.setState({ authUser: null });

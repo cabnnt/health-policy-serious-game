@@ -12,25 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-const MenuTabs = [
-  {
-    label: "Home",
-    pathname: "/home"
-  },
-  {
-    label: "Account",
-    pathname: "/account"
-  },
-  {
-    label: "Admin",
-    pathname: "/admin"
-  },
-  {
-    label: "Sign out",
-    pathname: "/signout"
-  }
-];
-
 const styles = NavigationStyles;
 
 class Navigation extends Component {
@@ -42,24 +23,12 @@ class Navigation extends Component {
     const showAdmin = authUser.role === 'teacher';
 
     this.menuTabs = [
-      {
-        label: 'Home',
-        pathnames: ['/home', '/'],
-      },
-      {
-        label: 'Account',
-        pathnames: ['/account'],
-      }
+      showAdmin
+        ? { label: 'Create game', pathnames: ['/admin', '/'] }
+        : { label: 'Join game', pathnames: ['/home', '/'] },
+      { label: 'Account', pathnames: ['/account'] },
+      { label: 'Sign Out', pathnames: ['/signout'] }
     ]
-
-    if (showAdmin) {
-      this.menuTabs.push({
-        label: 'Admin',
-        pathnames: ['/admin'],
-      })
-    }
-    
-    this.menuTabs.push({ label: 'Sign Out', pathnames: ['/signout'] });
   }
 
   handleChange = (event, value) => {
@@ -81,37 +50,37 @@ class Navigation extends Component {
       authUser ?
         <AppBar position="absolute" color="default" className={ classes.appBar }>
           <Toolbar>
-              <Grid container spacing={ 24 } alignItems="baseline">
-                <Grid item xs={ 12 } className={ classes.flex }>
-                    <div className={ classes.inline }>
-                      <Typography variant="h6" color="inherit" noWrap>
-                        <Link to='/' className={ classes.link }>
-                          <span className={ classes.tagline }>Health Policy</span>
-                        </Link>
-                      </Typography>
-                    </div>
-                    <div className={ classes.tabContainer }>
-                      <Tabs
-                        value={ this.current() || this.state.value }
-                        indicatorColor="primary"
-                        textColor="primary"
-                        onChange={ this.handleChange }
-                      >
-                        {
-                          this.menuTabs.map((tab, index) => (
-                            <Tab
-                              key={ index }
-                              component={ Link }
-                              to={{ pathname: tab.pathnames[0] }}
-                              classes={{ root: classes.tabItem }}
-                              label={ tab.label } 
-                            />
-                          ))
-                        }
-                      </Tabs>
-                    </div>
-                </Grid>
+            <Grid container spacing={ 24 } alignItems="baseline">
+              <Grid item xs={ 12 } className={ classes.flex }>
+                  <div className={ classes.inline }>
+                    <Typography variant="h6" color="inherit" noWrap>
+                      <Link to='/' className={ classes.link }>
+                        <span className={ classes.tagline }>Health Policy</span>
+                      </Link>
+                    </Typography>
+                  </div>
+                  <div className={ classes.tabContainer }>
+                    <Tabs
+                      value={ this.current() || this.state.value }
+                      indicatorColor="primary"
+                      textColor="primary"
+                      onChange={ this.handleChange }
+                    >
+                      {
+                        this.menuTabs.map((tab, index) => (
+                          <Tab
+                            key={ index }
+                            component={ Link }
+                            to={{ pathname: tab.pathnames[0] }}
+                            classes={{ root: classes.tabItem }}
+                            label={ tab.label } 
+                          />
+                        ))
+                      }
+                    </Tabs>
+                  </div>
               </Grid>
+            </Grid>
           </Toolbar>
         </AppBar> : null
     )
