@@ -20,11 +20,11 @@ class App extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.listener = this.props.firebase.auth.onAuthStateChanged(
-      authUser => {
+      async authUser => {
         let email = authUser ? authUser.email : null;
-        let user = this.props.firebase.fetchUserFromFirestore(email);
+        let user = await this.props.firebase.fetchUserFromFirestore(email);
         authUser
           ? this.setState({ authUser: user })
           : this.setState({ authUser: null });
