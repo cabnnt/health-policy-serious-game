@@ -44,6 +44,12 @@ export default class Firebase {
     return user;
   }
 
+  async createGame() {
+    return await this.db.collection('games').add({
+      created_at: firestore.Timestamp.fromDate(new Date())
+    });
+  }
+
   createUser = (role, username, email, password) => {
     this.auth.createUserWithEmailAndPassword(email, password);
     return this.db.collection('users').add({
