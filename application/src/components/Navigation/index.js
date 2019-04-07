@@ -37,6 +37,29 @@ class Navigation extends Component {
   constructor(props) {
     super(props);
     this.state = { value: 0 };
+    
+    const { authUser } = this.props;
+    const showAdmin = authUser.role === 'teacher';
+
+    this.menuTabs = [
+      {
+        label: 'Home',
+        pathnames: ['/home', '/'],
+      },
+      {
+        label: 'Account',
+        pathnames: ['/account'],
+      }
+    ]
+
+    if (showAdmin) {
+      this.menuTabs.push({
+        label: 'Admin',
+        pathnames: ['/admin'],
+      })
+    }
+    
+    this.menuTabs.push({ label: 'Sign Out', pathnames: ['/signout'] });
   }
 
   handleChange = (event, value) => {
@@ -45,18 +68,9 @@ class Navigation extends Component {
 
   current = () => {
     const currentPath = this.props.location.pathname;
-
-    switch (currentPath) {
-      case "/":
-      case "/home":
-        return 0;
-      case "/account":
-        return 1;
-      case "/admin":
-        return 2;
-      case "/signout":
-        return 3;
-    }
+    return this.menuTabs.findIndex(tab => {
+      return tab ? tab.pathnames.includes(currentPath) : false;
+    });
   }
 
   render() {
@@ -84,13 +98,13 @@ class Navigation extends Component {
                         onChange={ this.handleChange }
                       >
                         {
-                          MenuTabs.map((item, index) => (
+                          this.menuTabs.map((tab, index) => (
                             <Tab
                               key={ index }
                               component={ Link }
-                              to={{ pathname: item.pathname }}
+                              to={{ pathname: tab.pathnames[0] }}
                               classes={{ root: classes.tabItem }}
-                              label={ item.label } 
+                              label={ tab.label } 
                             />
                           ))
                         }
