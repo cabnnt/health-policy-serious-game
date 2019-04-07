@@ -9,6 +9,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { withAuthorization } from '../Authorization/context';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const MenuTabs = [
@@ -96,4 +97,4 @@ class Navigation extends Component {
   }
 }
 
-export default withRouter(withStyles(styles)(Navigation))
+export default withRouter(withAuthorization(withStyles(styles)(Navigation)));
