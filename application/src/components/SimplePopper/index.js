@@ -20,10 +20,10 @@ class SimplePopper extends React.Component {
     super(props);
     this.name = props.name;
   }
+
   state = {
     anchorEl: null,
     open: false,
-    renderQueue: false,
     inQueue: false
   };
 
@@ -36,23 +36,10 @@ class SimplePopper extends React.Component {
   };
 
   handleClickJoinQueue = event => {
-    this.setState(state => ({
-      renderQueue: true,
-      open: !state.open
-    }));
-
-
-    //this.enterQueue()
-
+    const { name } = this.props;
+    this.props.onClickJoinQueue(name);
   };
 
-  //enterQueue() {
-    //this.setState({
-      //users: this.concat("username")
-    //})
-   // alert("we made it")
-  //}
-//this.addUser(document.get('username')
   render() {
     const { classes } = this.props;
     const { anchorEl, open } = this.state;
@@ -67,18 +54,17 @@ class SimplePopper extends React.Component {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper>
-                <Typography className={classes.typography}>Minor Treatment : $4 / Major Treatment $10 <Button onClick={this.handleClickJoinQueue}>Join Queue</Button> </Typography>
-                
+                <Typography className={classes.typography}>
+                  Minor Treatment : $4 / Major Treatment $10
+                  <Button onClick={this.handleClickJoinQueue}>Join Queue</Button>
+                </Typography>
               </Paper>
             </Fade>
           )}
         </Popper>
           { 
-            this.state.renderQueue ? <Queue /> : null
-             }
-
-
-        
+            this.props.renderQueue ? <Queue /> : null
+          }    
       </div>
     );
   }
