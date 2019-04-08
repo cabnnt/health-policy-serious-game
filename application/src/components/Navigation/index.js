@@ -25,6 +25,7 @@ class Navigation extends Component {
 
     this.menuTabs = [
       { label: gamesListLabel, pathnames: ['/home', '/'] },
+      { label: 'Current Game', pathnames: ["/home/*"] },
       { label: 'Account', pathnames: ['/account'] },
       { label: 'Sign Out', pathnames: ['/signout'] }
     ]
@@ -40,6 +41,11 @@ class Navigation extends Component {
 
   current = () => {
     const currentPath = this.props.location.pathname;
+    const game_path = new RegExp(/\/home\/(.)*/g);
+    if(currentPath.match(game_path)){
+      // Wow this is really hacky but you gotta do what you gotta do.- ZL
+      return 2;
+    }
     return this.menuTabs.findIndex(tab => {
       return tab ? tab.pathnames.includes(currentPath) : false;
     });

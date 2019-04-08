@@ -59,7 +59,7 @@ class CurrentGamesList extends Component {
                     collection={ games }
                     attributes={ ['id'] }
                     headers={
-                      { id: 'ID' }
+                      { id: 'ID'}
                     } />
             )
         }

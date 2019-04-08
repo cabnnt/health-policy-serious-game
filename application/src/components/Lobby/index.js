@@ -19,15 +19,23 @@ const styles = {
 class Lobby extends React.Component{
     constructor(props){
       super(props);
+      this.state = {
+        game_id : this.props.match.game_id
+      }
+      // console.log(`Game_id : ${this.props.match.url}`);
     }
-    
+    componentDidMount(){
+      
+    }
     render(){
+      // if (this.state.game_id == )
+      // console.log(this.props); 
         return (
         <div>
           <div className={this.props.classes.doctorqueue}>
-            <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Nicole"></SimplePopper></div>
-            <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="MacKenzie"></SimplePopper></div>
-            <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Mitchell"></SimplePopper></div>
+            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Nicole"></SimplePopper></div> */}
+            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="MacKenzie"></SimplePopper></div> */}
+            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Mitchell"></SimplePopper></div> */}
           </div>
           <WaitingRoom></WaitingRoom>
         </div>

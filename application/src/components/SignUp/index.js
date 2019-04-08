@@ -171,4 +171,4 @@ class SignUp extends Component {
   }
 }
 
-export default withRouter(withFirebase(withStyles(styles)(SignUp)));
+export default (withFirebase(withStyles(styles)(SignUp)));
