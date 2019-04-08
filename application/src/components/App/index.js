@@ -10,6 +10,7 @@ import Navigation from '../Navigation';
 import AuthorizationContext, { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import SignOutButton from '../SignOut';
+import Lobby from '../Lobby';
 
 class App extends Component {
   constructor(props) {
@@ -56,6 +57,7 @@ class App extends Component {
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
             <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
+            <Route path={ ROUTES.GAME } component={ Lobby } />
             <Route path='/signout' component={ SignOutButton } />
           </div>
         </Router>

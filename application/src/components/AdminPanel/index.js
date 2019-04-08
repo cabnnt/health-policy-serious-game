@@ -4,9 +4,17 @@ import React from 'react';
 import { min } from 'moment';
 import { withFirebase } from '../Firebase';
 import FormStyles from '../../styles/formStyles';
-import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button';
-
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
+import { TextField } from '@material-ui/core';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 const moment = require('moment');
 const INITIAL_STATE = {
   timeRemaining: null,
@@ -17,14 +25,14 @@ const INITIAL_STATE = {
 const styles = FormStyles;
 
 class AdminPanel extends React.Component{
-    constructor(props){
-      super(props);
+  constructor(props){
+    super(props);
+    
       this.state = { ...INITIAL_STATE };
     }
-
     render() {
       const { classes } = this.props;
-      
+      const { firebase } = this.props;
       return (
         <div>
           <TimeInput mode='12h' onChange={ time => this.handleChange(time) }/>
@@ -45,6 +53,26 @@ class AdminPanel extends React.Component{
                   : 'Create new game')
             }
           </Button>
+          <form className={classes.container} noValidate autoComplete="off">
+              <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
+              <Select
+                multiple
+                value={this.state.name}
+                onChange={this.handleChange}
+                input={<Input id="select-multiple-chip" />}
+                renderValue={selected => (
+                  <div className={classes.chips}>
+                    {selected.map(value => (
+                      <Chip key={value} label={value} className={classes.chip} />
+                    ))}
+                  </div>
+                )}
+                // MenuProps={MenuProps}
+              >
+              </Select>
+            </FormControl>
+          </form>
         </div>
       )
     }
