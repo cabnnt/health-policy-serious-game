@@ -41,11 +41,6 @@ class Navigation extends Component {
 
   current = () => {
     const currentPath = this.props.location.pathname;
-    // const game_path = new RegExp(/\/game\/(.)*/g);
-    // if(currentPath.match(game_path)){
-    //   // Wow this is really hacky but you gotta do what you gotta do.- ZL
-    //   return 1;
-    // }
     return this.menuTabs.findIndex(tab => {
       return tab ? tab.pathnames.includes(currentPath) : false;
     });

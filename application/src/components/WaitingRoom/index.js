@@ -45,9 +45,10 @@ class WaitingRoom extends React.Component {
 
   render() {
     let { users } = this.state;
+    const { gameId } = queryString.parse(this.props.location.search);
     return (
       this.listener && _.isEmpty(users)
-        ? 'No users have joined this game'
+        ? `No users have joined game with ID '${gameId}'`
         : (
           !users.length
             ? <p>Loading users for this game...</p>
