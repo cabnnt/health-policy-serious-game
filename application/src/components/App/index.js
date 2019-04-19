@@ -11,6 +11,7 @@ import AuthorizationContext, { withAuthorization } from '../Authorization/contex
 import { withFirebase } from '../Firebase';
 import SignOutButton from '../SignOut';
 import Lobby from '../Lobby';
+import WaitingRoom from '../WaitingRoom';
 
 class App extends Component {
   constructor(props) {
@@ -57,7 +58,8 @@ class App extends Component {
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
             <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
-            <Route path={ ROUTES.GAME } component={ () => <Lobby /> } />
+            <Route path={ ROUTES.GAME } component={ Lobby } />
+            <Route path={ `${ROUTES.GAME}?gameId=${authUser && authUser.currentGame}` } component={ WaitingRoom }/>
             <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
           </div>
         </Router>

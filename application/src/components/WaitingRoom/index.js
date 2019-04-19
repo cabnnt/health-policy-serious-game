@@ -20,9 +20,11 @@ class WaitingRoom extends React.Component {
       .collection('games')
       .doc(gameId)
       .onSnapshot(document => {
-        document.data().players.forEach(
-          username => this.addUser(username)
-        )
+        if (document.exists) {
+          document.data().players.forEach(
+            username => this.addUser(username)
+          )
+        }
       });
     }
   }
@@ -44,20 +46,22 @@ class WaitingRoom extends React.Component {
   render() {
     let { users } = this.state;
     return (
-      !_.isEmpty(users)
-        ? <div>
-            <ul>
-              <h2>Users</h2>
-              {
-                users
-                  .sort()
-                  .map((username, index) => <li key={`user-${index}`}>{username}</li>)
-              }
-            </ul>
-          </div>
-        : <div>
-            <p>No users have joined this game.</p>
-          </div>
+      this.listener && _.isEmpty(users)
+        ? 'No users have joined this game'
+        : (
+          !users.length
+            ? <p>Loading users for this game...</p>
+            : <div>
+                <ul>
+                  <h2>Users</h2>
+                  {
+                    users
+                      .sort()
+                      .map((username, index) => <li key={`user-${index}`}>{username}</li>)
+                  }
+                </ul>
+              </div>
+        )
     )
   }
 };

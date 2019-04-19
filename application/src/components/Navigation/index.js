@@ -25,7 +25,7 @@ class Navigation extends Component {
 
     this.menuTabs = [
       { label: gamesListLabel, pathnames: ['/home', '/'] },
-      { label: 'Current Game', pathnames: ["/game"] },
+      { label: 'Current Game', pathnames: ['/game'] },
       { label: 'Account', pathnames: ['/account'] },
       { label: 'Sign Out', pathnames: ['/signout'] }
     ]
@@ -41,11 +41,11 @@ class Navigation extends Component {
 
   current = () => {
     const currentPath = this.props.location.pathname;
-    const game_path = new RegExp(/\/game\/(.)*/g);
-    if(currentPath.match(game_path)){
-      // Wow this is really hacky but you gotta do what you gotta do.- ZL
-      return 2;
-    }
+    // const game_path = new RegExp(/\/game\/(.)*/g);
+    // if(currentPath.match(game_path)){
+    //   // Wow this is really hacky but you gotta do what you gotta do.- ZL
+    //   return 1;
+    // }
     return this.menuTabs.findIndex(tab => {
       return tab ? tab.pathnames.includes(currentPath) : false;
     });
@@ -76,15 +76,20 @@ class Navigation extends Component {
                       onChange={ this.handleChange }
                     >
                       {
-                        this.menuTabs.map((tab, index) => (
-                          <Tab
+                        this.menuTabs.map((tab, index) => {
+                          const pathname = tab.pathnames[0];
+                          return <Tab
                             key={ index }
                             component={ Link }
-                            to={{ pathname: tab.pathnames[0] }}
+                            to={
+                              pathname.match(new RegExp(/(game)/))
+                                ? `${pathname}?gameId=${authUser.currentGame}`
+                                : pathname
+                            }
                             classes={{ root: classes.tabItem }}
                             label={ tab.label } 
                           />
-                        ))
+                        })
                       }
                     </Tabs>
                   </div>
