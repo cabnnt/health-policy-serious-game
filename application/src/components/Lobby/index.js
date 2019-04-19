@@ -6,6 +6,7 @@ import SimplePopper from '../SimplePopper';
 import classes from './lobby.scss';
 import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 const styles = {
     doctor: {
@@ -19,27 +20,17 @@ const styles = {
 class Lobby extends React.Component{
     constructor(props){
       super(props);
-      this.state = {
-        game_id : this.props.match.game_id
-      }
-      // console.log(`Game_id : ${this.props.match.url}`);
     }
-    componentDidMount(){
-      
-    }
+    
     render(){
-      // if (this.state.game_id == )
-      // console.log(this.props); 
-        return (
+      return (
         <div>
-          <div className={this.props.classes.doctorqueue}>
-            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Nicole"></SimplePopper></div> */}
-            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="MacKenzie"></SimplePopper></div> */}
-            {/* <div className="doctor"><SimplePopper className={this.props.classes.doctor} name="Mitchell"></SimplePopper></div> */}
+          {/* // TODO: placeholder, update Doctors Based on Admin Params */}
+          <div className={this.props.classes.doctorqueue}> 
           </div>
           <WaitingRoom></WaitingRoom>
         </div>
-        )
+      )
     }
 }
-export default withStyles(styles)(Lobby);
+export default withRouter(withStyles(styles)(Lobby));

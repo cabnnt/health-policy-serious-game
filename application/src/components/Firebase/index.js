@@ -52,10 +52,12 @@ export default class Firebase {
 
   createUser = (role, username, email, password) => {
     this.auth.createUserWithEmailAndPassword(email, password);
+    const currentGame = null;
     return this.db.collection('users').add({
       role,
       username,
       email,
+      currentGame
     });
   }
   signIn = (email, password) =>

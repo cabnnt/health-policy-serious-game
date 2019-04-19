@@ -57,8 +57,8 @@ class App extends Component {
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
             <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
-            <Route path={ ROUTES.GAME } component={ Lobby } />
-            <Route path='/signout' component={ SignOutButton } />
+            <Route path={ ROUTES.GAME } component={ () => <Lobby /> } />
+            <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
           </div>
         </Router>
       </AuthorizationContext.Provider>
