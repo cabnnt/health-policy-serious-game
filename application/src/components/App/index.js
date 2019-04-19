@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import * as ROUTES from '../../constants/routes';
+import AdminPanel from '../AdminPanel';
 import Home from '../Home';
 import Landing from '../Landing';
 import SignUp from '../SignUp';
@@ -9,6 +10,8 @@ import Navigation from '../Navigation';
 import AuthorizationContext, { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import SignOutButton from '../SignOut';
+import Lobby from '../Lobby';
+import WaitingRoom from '../WaitingRoom';
 
 class App extends Component {
   constructor(props) {
@@ -24,6 +27,7 @@ class App extends Component {
       async authUser => {
         let email = authUser ? authUser.email : null;
         let user = await this.props.firebase.fetchUserFromFirestore(email);
+
         authUser
           ? this.setState({ authUser: user })
           : this.setState({ authUser: null });
@@ -53,7 +57,10 @@ class App extends Component {
             <Route path={ ROUTES.HOME } component={ Home } />
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
-            <Route path='/signout' component={ SignOutButton } />
+            <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
+            <Route path={ ROUTES.GAME } component={ Lobby } />
+            <Route path={ `${ROUTES.GAME}?gameId=${authUser && authUser.currentGame}` } component={ WaitingRoom }/>
+            <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
           </div>
         </Router>
       </AuthorizationContext.Provider>

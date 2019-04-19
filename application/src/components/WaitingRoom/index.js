@@ -1,8 +1,11 @@
 import React from 'react';
 import 'firebase/firestore';
 import { firestore } from 'firebase';
+import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
+import _ from 'lodash';
 
-export default class WaitingRoom extends React.Component {
+class WaitingRoom extends React.Component {
   constructor(props){
     super(props);
     this.db = firestore();
@@ -11,17 +14,23 @@ export default class WaitingRoom extends React.Component {
   }
 
   componentDidMount() {
-    this.listener = firestore()
-      .collection('users')
-      .onSnapshot(collection => {
-        collection.forEach(
-          document => this.addUser(document.get('username'))
-        )
+    const { gameId } = queryString.parse(this.props.location.search);
+    if (gameId) {
+      this.listener = firestore()
+      .collection('games')
+      .doc(gameId)
+      .onSnapshot(document => {
+        if (document.exists) {
+          document.data().players.forEach(
+            username => this.addUser(username)
+          )
+        }
       });
+    }
   }
 
   componentWillUnmount() {
-    this.listener();
+    this.listener && this.listener();
   }
 
   addUser(username) {
@@ -34,18 +43,28 @@ export default class WaitingRoom extends React.Component {
     }
   }
 
-  render(){
+  render() {
     let { users } = this.state;
-
-    return <div>
-      <ul>
-        <h2>Users</h2>
-        {
-          users
-            .sort()
-            .map((username, index) => <li key={`user-${index}`}>{username}</li>)
-        }
-      </ul>
-    </div>
+    const { gameId } = queryString.parse(this.props.location.search);
+    return (
+      this.listener && _.isEmpty(users)
+        ? `No users have joined game with ID '${gameId}'`
+        : (
+          !users.length
+            ? <p>Loading users for this game...</p>
+            : <div>
+                <ul>
+                  <h2>Users</h2>
+                  {
+                    users
+                      .sort()
+                      .map((username, index) => <li key={`user-${index}`}>{username}</li>)
+                  }
+                </ul>
+              </div>
+        )
+    )
   }
 };
+
+export default withRouter(WaitingRoom);
