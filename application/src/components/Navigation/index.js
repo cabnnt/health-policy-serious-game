@@ -25,7 +25,7 @@ class Navigation extends Component {
 
     this.menuTabs = [
       { label: gamesListLabel, pathnames: ['/home', '/'] },
-      { label: 'Current Game', pathnames: ["/home/*"] },
+      { label: 'Current Game', pathnames: ["/home"] },
       { label: 'Account', pathnames: ['/account'] },
       { label: 'Sign Out', pathnames: ['/signout'] }
     ]
