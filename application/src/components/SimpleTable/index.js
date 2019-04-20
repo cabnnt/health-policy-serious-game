@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,7 +9,6 @@ import Paper from '@material-ui/core/Paper';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
 import { withAuthorization } from '../Authorization/context';
-import _ from 'lodash';
 import JoinButton from '../JoinButton';
 const styles = theme => ({
   root: {
@@ -23,57 +22,51 @@ const styles = theme => ({
   },
 });
 
-class SimpleTable extends Component {
-  constructor(props) {
-    super(props);
-  }
+const SimpleTable = props => {
+  const { classes, collection, attributes, headers, authUser } = props;
 
-  render() {
-    const { classes, collection, attributes, headers, authUser } = this.props;
-    return(
-      <Paper className={ classes.root }>
-        <Table className={ classes.table }>
-          <TableHead>
-            <TableRow>
-              { 
-                attributes.map((attribute, index) => {
-                  return (
-                    index === 0
-                      ? <TableCell key={ `${attribute}-header` }>{ headers[attribute] }</TableCell>
-                      : <TableCell align='right'>{ headers[attribute] }</TableCell>
-                  );
-                })
-              }
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              collection.map(row => (
-                <TableRow key={ row.id }>
-                  {
-                    attributes.map((attribute, index) => {
-                      return (
-                        index === 0
-                          ? <TableCell
-                              key={ row[attribute] }
-                              component='th'
-                              scope='row'>
-                              { row[attribute] }
-                              <JoinButton gameId={ row.id } />
-                            </TableCell>
-                          : <TableCell>{ row[attribute] }</TableCell>
-                      );
-                    })
-                  }
-                </TableRow>
-              ))
+  return(
+    <Paper className={ classes.root }>
+      <Table className={ classes.table }>
+        <TableHead>
+          <TableRow>
+            { 
+              attributes.map((attribute, index) => {
+                return (
+                  index === 0
+                    ? <TableCell key={ `${attribute}-header` }>{ headers[attribute] }</TableCell>
+                    : <TableCell align='right'>{ headers[attribute] }</TableCell>
+                );
+              })
             }
-          </TableBody>
-        </Table>
-      </Paper>
-    );
-  }
-
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            collection.map(row => (
+              <TableRow key={ row.id }>
+                {
+                  attributes.map((attribute, index) => {
+                    return (
+                      index === 0
+                        ? <TableCell
+                            key={ row[attribute] }
+                            component='th'
+                            scope='row'>
+                            { row[attribute] }
+                            <JoinButton gameId={ row.id } />
+                          </TableCell>
+                        : <TableCell>{ row[attribute] }</TableCell>
+                    );
+                  })
+                }
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </Paper>
+  )
 }
 
 export default withAuthorization(withFirebase(withRouter(withStyles(styles)(SimpleTable))));

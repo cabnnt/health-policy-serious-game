@@ -1,9 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import ButtonAppBar from '../ButtonAppBar';
-import TabContainer from '../TabContainer';
-import SimplePopper from '../SimplePopper';
-import classes from './lobby.scss';
 import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
@@ -33,4 +28,5 @@ class Lobby extends React.Component{
       )
     }
 }
+
 export default withRouter(withStyles(styles)(Lobby));
