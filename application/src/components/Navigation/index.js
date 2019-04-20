@@ -78,7 +78,10 @@ class Navigation extends Component {
                             component={ Link }
                             to={
                               pathname.match(new RegExp(/(game)/))
-                                ? `${pathname}?gameId=${authUser.currentGame}`
+                                ? (authUser.currentGame
+                                  ? `${pathname}?gameId=${authUser.currentGame}`
+                                  : `${pathname}`
+                                )
                                 : pathname
                             }
                             classes={{ root: classes.tabItem }}

@@ -59,7 +59,6 @@ class App extends Component {
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
             <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
             <Route path={ ROUTES.GAME } component={ Lobby } />
-            <Route path={ `${ROUTES.GAME}?gameId=${authUser && authUser.currentGame}` } component={ WaitingRoom }/>
             <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
           </div>
         </Router>

@@ -10,7 +10,10 @@ class WaitingRoom extends React.Component {
     super(props);
     this.db = firestore();
     this.listener = null;
-    this.state = { users: [] };
+    this.state = {
+      users: [],
+      gameExists: true
+    };
   }
 
   componentDidMount() {
@@ -24,8 +27,12 @@ class WaitingRoom extends React.Component {
           document.data().players.forEach(
             username => this.addUser(username)
           )
+        } else {
+          this.setState({ gameExists: false })
         }
       });
+    } else {
+      this.setState({ gameExists: false })
     }
   }
 
@@ -44,25 +51,27 @@ class WaitingRoom extends React.Component {
   }
 
   render() {
-    let { users } = this.state;
+    const { users, gameExists } = this.state;
     const { gameId } = queryString.parse(this.props.location.search);
     return (
-      this.listener && _.isEmpty(users)
-        ? `No users have joined game with ID '${gameId}'`
-        : (
-          !users.length
-            ? <p>Loading users for this game...</p>
-            : <div>
-                <ul>
-                  <h2>Users</h2>
-                  {
-                    users
-                      .sort()
-                      .map((username, index) => <li key={`user-${index}`}>{username}</li>)
-                  }
-                </ul>
-              </div>
-        )
+      gameExists
+      ? this.listener && _.isEmpty(users)
+          ? <p>{ `No users have joined game with ID '${gameId}'` }</p>
+          : !users.length
+              ? <p>Loading users for this game...</p>
+              : <div>
+                  <ul>
+                    <h2>Users</h2>
+                    {
+                      users
+                        .sort()
+                        .map((username, index) => <li key={`user-${index}`}>{username}</li>)
+                    }
+                  </ul>
+                </div>
+      : gameId
+        ? <p>{ `No game found with game ID ${gameId}.` }</p>
+        : <p>No game ID was provided.</p> 
     )
   }
 };
