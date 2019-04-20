@@ -6,10 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { withFirebase } from '../Firebase';
-import { withRouter } from 'react-router-dom';
-import { withAuthorization } from '../Authorization/context';
 import JoinButton from '../JoinButton';
+
 const styles = theme => ({
   root: {
     width: '90%',
@@ -23,7 +21,7 @@ const styles = theme => ({
 });
 
 const SimpleTable = props => {
-  const { classes, collection, attributes, headers, authUser } = props;
+  const { classes, collection, attributes, headers } = props;
 
   return(
     <Paper className={ classes.root }>
@@ -69,4 +67,4 @@ const SimpleTable = props => {
   )
 }
 
-export default withAuthorization(withFirebase(withRouter(withStyles(styles)(SimpleTable))));
+export default withStyles(styles)(SimpleTable);
