@@ -18,7 +18,7 @@ import Chip from '@material-ui/core/Chip';
 const moment = require('moment');
 const INITIAL_STATE = {
   timeRemaining: null,
-  name: null,
+  name: "",
   endTime: null,
   gameId: null,
   gamePending: false,

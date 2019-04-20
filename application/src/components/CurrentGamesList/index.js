@@ -34,6 +34,7 @@ class CurrentGamesList extends Component {
   }
 
   addGame = gameRecord => {
+    console.log(gameRecord);
     const { games } = this.state;
     const game = { id: gameRecord.id, ...gameRecord.data() };
     const gameIds = games.map(game => game.id);
@@ -57,9 +58,9 @@ class CurrentGamesList extends Component {
                 ? 'Loading games...'
                 : <SimpleTable
                     collection={ games }
-                    attributes={ ['id'] }
+                    attributes={ ['name'] }
                     headers={
-                      { id: 'ID'}
+                      { name: 'Games'}
                     } />
             )
         }

@@ -34,6 +34,13 @@ class SimpleTable extends Component {
   }
 
   handleJoin(event, gameId){
+    // console.log(event);
+    console.log(this.props.collection);
+    for(let i=0; i<this.props.collection.length; i++){
+      if(gameId == this.props.collection[i].name){
+        gameId = this.props.collection[i].id
+      }
+    }
     const { authUser, history } = this.props;
     const firestore = this.props.firebase.db
     event.preventDefault();
@@ -60,6 +67,7 @@ class SimpleTable extends Component {
 
   render() {
     const { classes, collection, attributes, headers } = this.props;
+    // console.log(this.props);
     return(
       <Paper className={ classes.root }>
         <Table className={ classes.table }>
