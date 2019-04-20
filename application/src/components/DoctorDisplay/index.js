@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import JoinQueueButton from '../JoinQueueButton';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import PropTypes from 'prop-types';
 
@@ -35,11 +37,17 @@ class DoctorDisplay extends Component {
   }
 
   render() {
+    const { doctorId, gameId, authUser } = this.props;
     const { queue } = this.state;
     return(
       <Paper>
         <p>Doctor</p>
         <p>Queue length: { queue ? queue.length : 0 }</p>
+        <JoinQueueButton
+          doctorId={ doctorId }
+          gameId={ gameId }
+          patientId={ authUser.id }
+          disabled={ authUser.role === 'teacher' } />
       </Paper>
     )
   }
@@ -50,4 +58,4 @@ DoctorDisplay.propTypes = {
   doctorId: PropTypes.string.isRequired,
 }
 
-export default withFirebase(DoctorDisplay);
+export default withAuthorization(withFirebase(DoctorDisplay));
