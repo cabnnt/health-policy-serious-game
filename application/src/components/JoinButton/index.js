@@ -38,12 +38,12 @@ const JoinButton = (props) => {
         console.error(`Error on update of game ${gameId} for player ${authUser.username}: ${err}`);
       });
   }
-
+  // We can set this up on the button once we are done testing:
+  //  disabled={authUser && (
+  //     !!authUser.currentGame 
+  //    || authUser.role === 'teacher'
+  //  )}
   return(<Button
-    disabled={authUser && (
-      !!authUser.currentGame 
-      || authUser.role === 'teacher'
-    )}
     onClick={event => {
       handleJoin(event)
     }}>
