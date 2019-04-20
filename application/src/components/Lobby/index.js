@@ -6,6 +6,7 @@ import SimplePopper from '../SimplePopper';
 import classes from './lobby.scss';
 import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
+import QueueList from '../QueueList';
 import { withRouter } from 'react-router-dom';
 
 const styles = {
@@ -25,6 +26,7 @@ class Lobby extends React.Component{
     render(){
       return (
         <div>
+          <QueueList />
           {/* // TODO: placeholder, update Doctors Based on Admin Params */}
           <div className={this.props.classes.doctorqueue}> 
           </div>

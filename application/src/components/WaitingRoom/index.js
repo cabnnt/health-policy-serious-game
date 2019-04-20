@@ -1,9 +1,16 @@
 import React from 'react';
 import 'firebase/firestore';
 import { firestore } from 'firebase';
+import color from '@material-ui/core/colors/deepOrange';
+import { withAuthorization } from '../Authorization/context';
+import WaitingRoomStyles from '../../styles/waitingRoomStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
+
+const styles = WaitingRoomStyles;
+
 
 class WaitingRoom extends React.Component {
   constructor(props){
@@ -45,16 +52,21 @@ class WaitingRoom extends React.Component {
 
   render() {
     let { users } = this.state;
+    const { classes } = this.props;
     const { gameId } = queryString.parse(this.props.location.search);
-    return (
+    const test = {
+      color: 'red',
+      fontSize: '20px'
+    };
+    return ( 
       this.listener && _.isEmpty(users)
         ? `No users have joined game with ID '${gameId}'`
         : (
           !users.length
-            ? <p>Loading users for this game...</p>
-            : <div>
+            ? <div><p>Loading users for this game...</p></div>
+            : <div className={test}>
                 <ul>
-                  <h2>Users</h2>
+                  <h2 >Users</h2>
                   {
                     users
                       .sort()
@@ -65,6 +77,7 @@ class WaitingRoom extends React.Component {
         )
     )
   }
+  
 };
-
+const style = withAuthorization(withStyles(styles)(WaitingRoom));
 export default withRouter(WaitingRoom);
