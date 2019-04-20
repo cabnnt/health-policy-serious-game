@@ -7,6 +7,7 @@ import classes from './lobby.scss';
 import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
 import QueueList from '../QueueList';
+import { withRouter } from 'react-router-dom';
 
 const styles = {
     doctor: {
@@ -23,12 +24,15 @@ class Lobby extends React.Component{
     }
     
     render(){
-        return (
+      return (
         <div>
           <QueueList />
+          {/* // TODO: placeholder, update Doctors Based on Admin Params */}
+          <div className={this.props.classes.doctorqueue}> 
+          </div>
           <WaitingRoom></WaitingRoom>
         </div>
-        )
+      )
     }
 }
-export default withStyles(styles)(Lobby);
+export default withRouter(withStyles(styles)(Lobby));

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import Lobby from '../Lobby';
+
+import CurrentGamesList from '../CurrentGamesList';
+
 const Home = () => (
   <div>
-    {/* <h1>Home page</h1> */}
-    <Lobby></Lobby>
+    <CurrentGamesList />
   </div>
 )
 
