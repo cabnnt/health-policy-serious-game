@@ -44,9 +44,12 @@ export default class Firebase {
     return user;
   }
 
-  async createGame() {
+  async createGame(params) {
     return await this.db.collection('games').add({
-      created_at: firestore.Timestamp.fromDate(new Date())
+      createdAt: firestore.Timestamp.fromDate(new Date()),
+      roundTime : params.roundTime,
+      startTime: params.startTime,
+      numberOfDoctors: params.numberOfDoctors
     });
   }
 

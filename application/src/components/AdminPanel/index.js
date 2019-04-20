@@ -61,6 +61,10 @@ class AdminPanel extends React.Component{
       event.persist();
       this.setState({startTime: event.target.value})
     }
+    onDoctorChange = (event)=>{
+      console.log("docto chang");
+      this.setState({numberOfDoctors: event.target.value})
+    }
     render() {
       const { classes } = this.props;
       const { firebase } = this.props;
@@ -69,7 +73,6 @@ class AdminPanel extends React.Component{
           {
             moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
           }
-        <form className={classes.root} autoComplete="off">
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor="time-simple">Time for Round</InputLabel>
             <Select
@@ -80,16 +83,16 @@ class AdminPanel extends React.Component{
                 id: 'time-simple',
               }}
             >
-              <MenuItem value="0">
-                <em>Choose one: </em>
-              </MenuItem>
-              {/* TODO : Enumerate and loop */}
-                <MenuItem value={15}>15 minutes</MenuItem>
-                <MenuItem value={30}>30 minutes</MenuItem>
-                <MenuItem value={45}>45 minutes</MenuItem>
-                <MenuItem value={60}>60 minutes</MenuItem>
-                <MenuItem value={75}>75 minutes</MenuItem>
-                <MenuItem value={90}>90 minutes</MenuItem>
+          <MenuItem value="0">
+            <em>Choose one: </em>
+          </MenuItem>
+          {/* TODO : Enumerate and loop */}
+            <MenuItem value={15}>15 minutes</MenuItem>
+            <MenuItem value={30}>30 minutes</MenuItem>
+            <MenuItem value={45}>45 minutes</MenuItem>
+            <MenuItem value={60}>60 minutes</MenuItem>
+            <MenuItem value={75}>75 minutes</MenuItem>
+            <MenuItem value={90}>90 minutes</MenuItem>
             </Select>
             <TextField
               id="datetime-local"
@@ -101,6 +104,17 @@ class AdminPanel extends React.Component{
                 shrink: true,
               }}
               onChange={this.onDateChange}
+            />
+            <TextField
+              id="number"
+              label="Number of Doctors"
+              type="number"
+              defaultValue={this.state.numberOfDoctors}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.onDoctorChange}
             />
             
             <Button
@@ -117,14 +131,18 @@ class AdminPanel extends React.Component{
                 }
             </Button>
           </FormControl>
-        </form>
       </div>
       )
     }
     onSubmit = async (event) => {
       const { firebase } = this.props;
+      let params = {
+        startTime: moment(this.state.startTime).format("YYYY-MM-DDThh:mm"),
+        roundTime: this.state.time,
+        numberOfDoctors: this.state.numberOfDoctors
+      }
       this.setState({ gamePending: true });
-      this.setState({ gameId: (await firebase.createGame()).id } );
+      this.setState({ gameId: (await firebase.createGame(params)).id } );
       this.setState({ gamePending: false });
     }
 
