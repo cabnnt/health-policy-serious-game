@@ -8,35 +8,41 @@ import firebase from 'firebase';
 const JoinButton = (props) => {
   const { authUser, history, gameId } = props;
 
-  const handleJoin = (event) => {
-    const firestore = props.firebase.db
-    event.preventDefault();
-    gameId && firestore
-      .collection('games')
-      .doc(gameId)
-      .update({
-        players: firebase.firestore.FieldValue.arrayUnion(authUser.username)
-      })
-      .then(() => {
-        firestore
-          .collection('games')
-          .doc(gameId)
-          .collection('doctors')
-          .doc(authUser.id)
-          .set({
-            queue: []
-          })
-        firestore
-          .collection('users')
-          .doc(authUser.id)
-          .update({
-            currentGame: gameId
-          })
-        authUser.currentGame = gameId;
-        history.push(`game?gameId=${gameId}`);
-      }).catch(err => {
-        console.error(`Error on update of game ${gameId} for player ${authUser.username}: ${err}`);
-      });
+  const handleJoin = async (event) => {
+    const firestore = props.firebase.db;
+    const game = firestore.collection('games').doc(gameId);
+    const gameDocument = gameId ? await game.get() : null;
+    
+    if (gameDocument && gameDocument.exists) {
+      const gameData = gameDocument.data();
+      const players = gameData.players;
+      const numberOfDoctors = parseInt(gameData.numberOfDoctors);
+      const numberOfPlayers = players ? players.length : 0;
+      game
+        .update({
+          players: firebase.firestore.FieldValue.arrayUnion(authUser.username)
+        })
+        .then(() => {
+          if (numberOfPlayers < numberOfDoctors) {
+            game
+              .collection('doctors')
+              .doc(authUser.id)
+              .set({
+                queue: []
+              })
+          }
+          firestore
+            .collection('users')
+            .doc(authUser.id)
+            .update({
+              currentGame: gameId
+            })
+          authUser.currentGame = gameId;
+          history.push(`game?gameId=${gameId}`);
+        }).catch(err => {
+          console.error(`Error on update of game ${gameId} for player ${authUser.username}: ${err}`);
+        });
+    }
   }
   // We can set this up on the button once we are done testing:
   //  disabled={authUser && (
