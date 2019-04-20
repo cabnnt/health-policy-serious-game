@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 const styles = WaitingRoomStyles;
 
+
 class WaitingRoom extends React.Component {
   constructor(props){
     super(props);
@@ -51,16 +52,21 @@ class WaitingRoom extends React.Component {
 
   render() {
     let { users } = this.state;
+    const { classes } = this.props;
     const { gameId } = queryString.parse(this.props.location.search);
-    return (
+    const test = {
+      color: 'red',
+      fontSize: '20px'
+    };
+    return ( 
       this.listener && _.isEmpty(users)
         ? `No users have joined game with ID '${gameId}'`
         : (
           !users.length
-            ? <p>Loading users for this game...</p>
-            : <div>
+            ? <div><p>Loading users for this game...</p></div>
+            : <div className={test}>
                 <ul>
-                  <h2>Users</h2>
+                  <h2 >Users</h2>
                   {
                     users
                       .sort()
@@ -73,5 +79,5 @@ class WaitingRoom extends React.Component {
   }
   
 };
-
+const style = withAuthorization(withStyles(styles)(WaitingRoom));
 export default withRouter(WaitingRoom);
