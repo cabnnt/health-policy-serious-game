@@ -20,63 +20,107 @@ const INITIAL_STATE = {
   timeRemaining: null,
   endTime: null,
   gameId: null,
-  gamePending: false
+  gamePending: false,
+  time : 0,
 }
-const styles = FormStyles;
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+});;
 
 class AdminPanel extends React.Component{
   constructor(props){
     super(props);
     
       this.state = { ...INITIAL_STATE };
+      this.handleMenuChange = this.handleMenuChange.bind(this);
+      this.onDateChange = this.onDateChange.bind(this);
+    }
+    handleMenuChange = (event)=>{
+      this.setState({time: event.target.value}) // todo 
+    }
+    onDateChange = (event)=>{
+      event.persist();
+      this.setState({startTime: event.target.value})
     }
     render() {
       const { classes } = this.props;
       const { firebase } = this.props;
       return (
         <div>
-          <TimeInput mode='12h' onChange={ time => this.handleChange(time) }/>
           {
-            this.state.timeRemaining && this.state.timeRemaining >= 0
-              ? <div>Time for round: { this.state.timeRemaining }</div>
-              : <div>Please enter a valid time</div>
+            moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
           }
-          <Button
-            type="submit"
-            onClick={ this.onSubmit }
-            disabled={ !!this.state.gameId }>
-            {
-              this.state.gameId 
+        <form className={classes.root} autoComplete="off">
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="time-simple">Time for Round</InputLabel>
+            <Select
+              value={this.state.time}
+              onChange={this.handleMenuChange}
+              inputProps={{
+                name: 'time',
+                id: 'time-simple',
+              }}
+            >
+              <MenuItem value="0">
+                <em>Choose one: </em>
+              </MenuItem>
+              {/* TODO : Enumerate and loop */}
+                <MenuItem value={15}>15 minutes</MenuItem>
+                <MenuItem value={30}>30 minutes</MenuItem>
+                <MenuItem value={45}>45 minutes</MenuItem>
+                <MenuItem value={60}>60 minutes</MenuItem>
+                <MenuItem value={75}>75 minutes</MenuItem>
+                <MenuItem value={90}>90 minutes</MenuItem>
+            </Select>
+            <TextField
+              id="datetime-local"
+              label="Round Start Time"
+              type="datetime-local"
+              defaultValue={moment().format("YYYY-MM-DDThh:mm")}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.onDateChange}
+            />
+            
+            <Button
+              type="submit"
+              onClick={ this.onSubmit }
+              disabled={ !!this.state.gameId || !this.state.time || moment(this.state.startTime) < moment()}
+              >
+              {
+                this.state.gameId 
                 ? 'Game created'
                 : (this.state.gamePending
                   ? 'Creating game...'
                   : 'Create new game')
-            }
-          </Button>
-          <form className={classes.container} noValidate autoComplete="off">
-              <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
-              <Select
-                multiple
-                value={this.state.name}
-                onChange={this.handleChange}
-                input={<Input id="select-multiple-chip" />}
-                renderValue={selected => (
-                  <div className={classes.chips}>
-                    {selected.map(value => (
-                      <Chip key={value} label={value} className={classes.chip} />
-                    ))}
-                  </div>
-                )}
-                // MenuProps={MenuProps}
-              >
-              </Select>
-            </FormControl>
-          </form>
-        </div>
+                }
+            </Button>
+          </FormControl>
+        </form>
+      </div>
       )
     }
-    
     onSubmit = async (event) => {
       const { firebase } = this.props;
       this.setState({ gamePending: true });
@@ -84,14 +128,9 @@ class AdminPanel extends React.Component{
       this.setState({ gamePending: false });
     }
 
-    handleChange(params) {
-      let now = moment();
-      let till = moment(params);
-      var duration = moment.duration(till.diff(now));
-      var minutes = Math.round(duration.asMinutes())
-      this.setState({endTime: till, timeRemaining: minutes});
-      
-    }
+    handleChange = event=>{
+      this.setState({ [event.target.name]: event.target.value });
   }
+}
 
 export default withFirebase(withStyles(styles)(AdminPanel));
