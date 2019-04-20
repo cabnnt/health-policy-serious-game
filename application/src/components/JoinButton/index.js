@@ -28,6 +28,8 @@ const JoinButton = (props) => {
               .collection('doctors')
               .doc(authUser.id)
               .set({
+                id: authUser.id,
+                username: authUser.username,
                 queue: []
               })
           }
