@@ -1,3 +1,4 @@
+import DoctorDisplay from '../DoctorDisplay';
 import React from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
@@ -20,10 +21,10 @@ class Lobby extends React.Component{
     render(){
       return (
         <div>
-          {/* // TODO: placeholder, update Doctors Based on Admin Params */}
-          <div className={this.props.classes.doctorqueue}> 
-          </div>
-          <WaitingRoom></WaitingRoom>
+          <DoctorDisplay
+            gameId='qoVCDFTTrzDSDq42BtWO'
+            doctorId='2szEfr9IKP4lhHfoUszi' />
+          <WaitingRoom />
         </div>
       )
     }
