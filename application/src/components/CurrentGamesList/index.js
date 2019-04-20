@@ -20,8 +20,8 @@ class CurrentGamesList extends Component {
     
     this.currentGamesListener = firestore
       .collection('games')
-      .where('created_at', '>=', since)
-      .orderBy('created_at', 'desc')
+      .where('createdAt', '>=', since)
+      .orderBy('createdAt', 'desc')
       .onSnapshot(collection => {
         collection.forEach(
           document => this.addGame(document)
