@@ -1,12 +1,11 @@
 const QueueStyles = theme => ({
 
-patientQueue: {
-	padding: "10px 20px",
-  textAlign: "left",
+patientQueues: {
   color: "red",
-  fontSize: "12px"
+  fontSize: "4px"
+
 }
 
 })
 
-export default QueueStyles;
+export default QueueStyles ;

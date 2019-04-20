@@ -36,8 +36,13 @@ class SimplePopper extends React.Component {
   };
 
   handleClickJoinQueue = event => {
-    const { name } = this.props;
-    this.props.onClickJoinQueue(name);
+    if(window.confirm("Are you sure you wish to join this queue?")) {
+      const { name } = this.props;
+      this.props.onClickJoinQueue(name);
+      this.setState(state => ({
+      open: !state.open,
+      }));
+    }
   };
 
   render() {
@@ -45,9 +50,10 @@ class SimplePopper extends React.Component {
     const { anchorEl, open } = this.state;
     const id = open ? 'simple-popper' : null;
 
+
     return (
       <div>
-        <Button aria-describedby={id} variant="contained" onClick={this.handleClick}>
+        <Button className={classes.DoctorButton} aria-describedby={id} variant="contained" onClick={this.handleClick}>
           Doctor {this.props.name}
         </Button>
         <Popper id={id} open={open} anchorEl={anchorEl} transition>

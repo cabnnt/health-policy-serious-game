@@ -26,15 +26,20 @@ class Queue extends Component {
   render() {
 
   	const { classes, authUser } = this.props;
-  	console.log(authUser.username);
+  	//console.log(authUser.username);
 
     return(
     	<div>
+				<h3>x patients ahead of you</h3> 
     		<h3 className={ classes.patientQueue }><FontAwesomeIcon icon="user" />{authUser.username}</h3>
-    	</div>
-    	)
+				<h3>x patients behind you</h3> 
 
-  }
+    	</div>
+			
+			)
+
+	}
+	
 }
 
 export default withAuthorization(withStyles(styles)(Queue));

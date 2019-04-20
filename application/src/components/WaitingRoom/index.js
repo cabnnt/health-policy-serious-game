@@ -1,8 +1,17 @@
 import React from 'react';
 import 'firebase/firestore';
 import { firestore } from 'firebase';
+//import Image from '../WaitingRoom/test.jpg';
+import color from '@material-ui/core/colors/deepOrange';
+import { withAuthorization } from '../Authorization/context';
+import WaitingRoomStyles from '../../styles/waitingRoomStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-export default class WaitingRoom extends React.Component {
+const styles = WaitingRoomStyles;
+
+
+class WaitingRoom extends React.Component {
+
   constructor(props){
     super(props);
     this.db = firestore();
@@ -36,16 +45,24 @@ export default class WaitingRoom extends React.Component {
 
   render(){
     let { users } = this.state;
+    const { classes } = this.props;
 
-    return <div>
+    return <div className={classes.lobbyBackground}>
+      <div className={classes.usersDiv}>
       <ul>
-        <h2>Users</h2>
+        <h2>Waiting Room</h2>
         {
           users
             .sort()
-            .map((username, index) => <li key={`user-${index}`}>{username}</li>)
+            .map((username, index) => <li key={`user-${index}`}>{username}{index}</li>)
         }
+
       </ul>
+      </div>
     </div>
+  
   }
+  
 };
+
+export default withAuthorization(withStyles(styles)(WaitingRoom));
