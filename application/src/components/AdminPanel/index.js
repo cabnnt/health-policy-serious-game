@@ -18,6 +18,7 @@ import Chip from '@material-ui/core/Chip';
 const moment = require('moment');
 const INITIAL_STATE = {
   timeRemaining: null,
+  name: null,
   endTime: null,
   gameId: null,
   gamePending: false,
@@ -65,7 +66,13 @@ class AdminPanel extends React.Component{
       })
     }
     handleMenuChange = (event)=>{
+      event.persist();
       this.setState({time: event.target.value}) // todo 
+    }
+    handleNameChange = (event)=>{
+      event.persist();
+      this.setState({name:event.target.value});
+      
     }
     onDateChange = (event)=>{
       event.persist();
@@ -80,19 +87,28 @@ class AdminPanel extends React.Component{
       const { firebase } = this.props;
       return (
         <div>
-
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="time-simple">Time for Round</InputLabel>
-            <Select
-              value={this.state.time}
-              onChange={this.handleMenuChange}
-              inputProps={{
-                name: 'time',
-                id: 'time-simple',
-              }}
-            >
+        
+        <FormControl className={classes.formControl}>
+          <TextField
+              id="outlined-name"
+              label="Name of Game"
+              className={classes.textField}
+              value={this.state.name}
+              onChange={this.handleNameChange}
+              margin="normal"
+              variant="standard"
+          />
+          <Select
+            value={this.state.time}
+            onChange={this.handleMenuChange}
+            inputProps={{
+              name: 'time',
+              id: 'time-simple',
+            }}
+          >
+          {/* <InputLabel htmlFor="time-simple">Time for Round</InputLabel> */}
           <MenuItem value="0">
-            <em>Choose one: </em>
+            <em>Round Time </em>
           </MenuItem>
           {/* TODO : Enumerate and loop */}
             <MenuItem value={15}>15 minutes</MenuItem>
@@ -174,6 +190,7 @@ class AdminPanel extends React.Component{
     onSubmit = async (event) => {
       const { firebase } = this.props;
       let params = {
+        name: this.state.name,
         startTime: moment(this.state.startTime).format("YYYY-MM-DDThh:mm"),
         roundTime: this.state.time,
         numberOfDoctors: this.state.numberOfDoctors,
