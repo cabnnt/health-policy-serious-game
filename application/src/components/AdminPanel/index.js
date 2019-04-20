@@ -22,6 +22,8 @@ const INITIAL_STATE = {
   gameId: null,
   gamePending: false,
   time : 0,
+  minorCost: 5.80,
+  majorCost: 585.10
 }
 const styles = theme => ({
   root: {
@@ -54,6 +56,14 @@ class AdminPanel extends React.Component{
       this.handleMenuChange = this.handleMenuChange.bind(this);
       this.onDateChange = this.onDateChange.bind(this);
     }
+    handlePriceChange = (event)=>{
+      event.persist();
+      console.log(event);
+      this.setState({
+        minorCost: event.target.value,
+        majorCost: event.target.value
+      })
+    }
     handleMenuChange = (event)=>{
       this.setState({time: event.target.value}) // todo 
     }
@@ -70,9 +80,7 @@ class AdminPanel extends React.Component{
       const { firebase } = this.props;
       return (
         <div>
-          {
-            moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
-          }
+
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor="time-simple">Time for Round</InputLabel>
             <Select
@@ -111,16 +119,42 @@ class AdminPanel extends React.Component{
               type="number"
               defaultValue={this.state.numberOfDoctors}
               className={classes.textField}
+              inputProps={{min:0, max: Number.MAX_SAFE_INTEGER}}
               InputLabelProps={{
                 shrink: true,
               }}
               onChange={this.onDoctorChange}
             />
-            
+            <TextField
+              id="standard-number"
+              label="Minor Treatment Cost"
+              defaultValue={this.state.minorCost}
+              onChange={this.handlePriceChange}
+              type="number"
+              inputProps={{step:0.10, min:0.00, max: Number.MAX_SAFE_INTEGER}}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              margin="normal"
+            />
+            <TextField
+              id="standard-number"
+              label="Major Treatment Cost"
+              defaultValue={this.state.majorCost}
+              onChange={this.handlePriceChange}
+              type="number"
+              inputProps={{step:0.10, min:0.00, max: Number.MAX_SAFE_INTEGER}}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              margin="normal"
+            />
             <Button
               type="submit"
               onClick={ this.onSubmit }
-              disabled={ !!this.state.gameId || !this.state.time || moment(this.state.startTime) < moment()}
+              disabled={ !!this.state.gameId || this.state.time==0 || moment(this.state.startTime) < moment() || this.state.minorCost>this.state.majorCost}
               >
               {
                 this.state.gameId 
@@ -130,6 +164,9 @@ class AdminPanel extends React.Component{
                   : 'Create new game')
                 }
             </Button>
+            {
+              moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
+            }
           </FormControl>
       </div>
       )
@@ -139,7 +176,9 @@ class AdminPanel extends React.Component{
       let params = {
         startTime: moment(this.state.startTime).format("YYYY-MM-DDThh:mm"),
         roundTime: this.state.time,
-        numberOfDoctors: this.state.numberOfDoctors
+        numberOfDoctors: this.state.numberOfDoctors,
+        minorCost : this.state.minorCost,
+        majorCost : this.state.majorCost
       }
       this.setState({ gamePending: true });
       this.setState({ gameId: (await firebase.createGame(params)).id } );
