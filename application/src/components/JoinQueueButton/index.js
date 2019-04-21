@@ -2,32 +2,15 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { withFirebase } from '../Firebase';
-import firebase from 'firebase';
+import { withAuthorization } from '../Authorization/context';
 
 const JoinQueueButton = props => {
   const { gameId, doctorId, patientId, disabled } = props;
   const firestore = props.firebase.db;
   
   const handleJoinQueue = () => {
-    firestore
-      .collection('games')
-      .doc(gameId)
-      .collection('doctors')
-      .doc(doctorId)
-      .update({
-        queue: firebase.firestore.FieldValue.arrayUnion(patientId)
-      });
-  }
-  
-  const handleLeaveQueue = () => {
-    firestore
-      .collection('games')
-      .doc(gameId)
-      .collection('doctors')
-      .doc(doctorId)
-      .update({
-        queue: firebase.firestore.FieldValue.arrayRemove(patientId)
-      });
+    const { onChangeQueue } = props;
+    onChangeQueue(gameId, doctorId, patientId)
   }
 
   return(
@@ -37,12 +20,6 @@ const JoinQueueButton = props => {
         onClick={ handleJoinQueue }>
         Join queue
       </Button>
-      
-      <Button
-        disabled={ disabled }
-        onClick={ handleLeaveQueue }>
-        Leave queue
-      </Button>
     </div>
   );
 }
@@ -51,6 +28,7 @@ JoinQueueButton.propTypes = {
   gameId: PropTypes.string.isRequired,
   doctorId: PropTypes.string.isRequired,
   patientId: PropTypes.string.isRequired,
+  onChangeQueue: PropTypes.func.isRequired
 }
 
-export default withFirebase(JoinQueueButton);
+export default withAuthorization(withFirebase(JoinQueueButton));

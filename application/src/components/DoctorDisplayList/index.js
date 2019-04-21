@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import DoctorDisplay from '../DoctorDisplay';
 import Paper from '@material-ui/core/Paper';
 import queryString from 'query-string';
+import { withAuthorization } from '../Authorization/context';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../Firebase';
 import { withStyles } from '@material-ui/core/styles';
+import firebase from 'firebase';
 
 const styles = {
   main: {
@@ -17,15 +19,16 @@ class DoctorDisplayList extends Component {
     super(props);
     this.state = {
       doctors: [],
+      currentQueueDoctorId: null,
       gameId: queryString.parse(this.props.location.search).gameId
     }
+    this.firestore = this.props.firebase.db;
   }
 
   componentDidMount() {
     const { gameId } = this.state;
-    const firestore = this.props.firebase.db;
     
-    firestore
+    this.firestore
       .collection('games')
       .doc(gameId)
       .collection('doctors')
@@ -33,6 +36,42 @@ class DoctorDisplayList extends Component {
         doctorsCollection.forEach(doctorDocument => {
           this.addDoctor({ id: doctorDocument.id, ...doctorDocument.data() })
         });
+      });
+  }
+
+  onChangeQueue(gameId, doctorId, patientId) {
+    const { authUser } = this.props;
+    const { currentQueueDoctorId } = this.state;
+
+    if (currentQueueDoctorId) {
+      this.leaveQueue(gameId, currentQueueDoctorId, patientId);
+    }
+    this.joinQueue(gameId, doctorId, patientId);
+    
+    authUser.currentQueue = doctorId;
+    
+    this.setState({ currentQueueDoctorId: doctorId });
+  }
+
+  joinQueue(gameId, doctorId, patientId) {
+    this.firestore
+      .collection('games')
+      .doc(gameId)
+      .collection('doctors')
+      .doc(doctorId)
+      .update({
+        queue: firebase.firestore.FieldValue.arrayUnion(patientId)
+      });
+  }
+
+  leaveQueue(gameId, doctorId, patientId) {
+    this.firestore
+      .collection('games')
+      .doc(gameId)
+      .collection('doctors')
+      .doc(doctorId)
+      .update({
+        queue: firebase.firestore.FieldValue.arrayRemove(patientId)
       });
   }
 
@@ -47,17 +86,20 @@ class DoctorDisplayList extends Component {
   }
 
   render() {
-    const { gameId, doctors } = this.state;
-    const { classes } = this.props;
-
+    const { gameId, doctors, currentQueueDoctorId } = this.state;
+    const { authUser, classes } = this.props;
+    const patientId = authUser.id;
     return (
       <Paper className={ classes.main }>
         {
-          doctors.map((doctor, index) => {
+          doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
             return (
               <DoctorDisplay
+                key={ doctor.id }
+                selected={ currentQueueDoctorId === doctor.id }
                 doctor={ doctor }
-                gameId={ gameId } />
+                gameId={ gameId }
+                onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) } />
             );
           })
         }
@@ -66,4 +108,4 @@ class DoctorDisplayList extends Component {
   }
 }
 
-export default withFirebase(withRouter(withStyles(styles)(DoctorDisplayList)));
+export default withAuthorization(withFirebase(withRouter(withStyles(styles)(DoctorDisplayList))));
