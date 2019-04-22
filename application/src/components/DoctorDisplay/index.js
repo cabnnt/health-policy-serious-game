@@ -77,7 +77,7 @@ class DoctorDisplay extends Component {
                   { queue.indexOf(authUser.id) + 1 }
                 </b> in the queue, with <b>
                   { queue.length - 1 - queue.indexOf(authUser.id) }
-                </b> patients behind you.
+                </b> patient(s) behind you.
               </Typography>
             : null
           }
