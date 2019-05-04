@@ -13,8 +13,6 @@ const ViewGameButton = (props) => {
     const game = firestore.collection('games').doc(gameId);
     const gameDocument = gameId ? await game.get() : null;
 
-    console.log(gameDocument);
-
     if (gameDocument && gameDocument.exists) {
       firestore
         .collection('users')
