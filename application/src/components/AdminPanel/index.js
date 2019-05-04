@@ -1,7 +1,7 @@
 import TimeInput from 'material-ui-time-picker';
 import React from 'react';
-
-import { min } from 'moment';
+import NumberFormat from 'react-number-format';
+import { min, locale } from 'moment';
 import { withFirebase } from '../Firebase';
 import FormStyles from '../../styles/formStyles';
 import Button from '@material-ui/core/Button';
@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
+import numeral from 'numeral'
 const moment = require('moment');
 const INITIAL_STATE = {
   timeRemaining: null,
@@ -23,8 +24,8 @@ const INITIAL_STATE = {
   gameId: null,
   gamePending: false,
   time : 0,
-  minorCost: 5.80,
-  majorCost: 585.10
+  minorCost:null,
+  majorCost:null
 }
 const styles = theme => ({
   root: {
@@ -34,6 +35,7 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
+
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -60,10 +62,14 @@ class AdminPanel extends React.Component{
     handlePriceChange = (event)=>{
       event.persist();
       console.log(event);
+      
       this.setState({
         minorCost: event.target.value,
         majorCost: event.target.value
       })
+      console.log(typeof this.state.minorCost);
+      console.log(typeof this.state.majorCost);
+      
     }
     handleMenuChange = (event)=>{
       event.persist();
@@ -79,7 +85,6 @@ class AdminPanel extends React.Component{
       this.setState({startTime: event.target.value})
     }
     onDoctorChange = (event)=>{
-      console.log("docto chang");
       this.setState({numberOfDoctors: event.target.value})
     }
     render() {
@@ -89,35 +94,37 @@ class AdminPanel extends React.Component{
         <div>
         
         <FormControl className={classes.formControl}>
+        <InputLabel style={{marginLeft:10, marginTop:10}}>Round-Time</InputLabel>
+            <Select
+              style={{marginLeft:10}}
+              value={this.state.time}
+              onChange={this.handleMenuChange}
+              placeholder={"Foo"}
+              inputProps={
+                {
+                name: 'time',
+                id: 'time-simple',
+                }
+              }
+            >
+              <MenuItem value={15}>15 minutes</MenuItem>
+              <MenuItem value={30}>30 minutes</MenuItem>
+              <MenuItem value={45}>45 minutes</MenuItem>
+              <MenuItem value={60}>60 minutes</MenuItem>
+              <MenuItem value={75}>75 minutes</MenuItem>
+              <MenuItem value={90}>90 minutes</MenuItem>
+            </Select>
           <TextField
+              style={{marginTop:0}}
               id="outlined-name"
               label="Name of Game"
               className={classes.textField}
               value={this.state.name}
-              onChange={this.handleNameChange}
+              onChange={(this.handleNameChange)}
               margin="normal"
               variant="standard"
           />
-          <Select
-            value={this.state.time}
-            onChange={this.handleMenuChange}
-            inputProps={{
-              name: 'time',
-              id: 'time-simple',
-            }}
-          >
-          {/* <InputLabel htmlFor="time-simple">Time for Round</InputLabel> */}
-          <MenuItem value="0">
-            <em>Round Time </em>
-          </MenuItem>
-          {/* TODO : Enumerate and loop */}
-            <MenuItem value={15}>15 minutes</MenuItem>
-            <MenuItem value={30}>30 minutes</MenuItem>
-            <MenuItem value={45}>45 minutes</MenuItem>
-            <MenuItem value={60}>60 minutes</MenuItem>
-            <MenuItem value={75}>75 minutes</MenuItem>
-            <MenuItem value={90}>90 minutes</MenuItem>
-            </Select>
+
             <TextField
               id="datetime-local"
               label="Round Start Time"
@@ -128,7 +135,7 @@ class AdminPanel extends React.Component{
                 shrink: true,
               }}
               onChange={this.onDateChange}
-            />
+              />
             <TextField
               id="number"
               label="Number of Doctors"
@@ -141,32 +148,31 @@ class AdminPanel extends React.Component{
               }}
               onChange={this.onDoctorChange}
             />
-            <TextField
-              id="standard-number"
+            <NumberFormat 
               label="Minor Treatment Cost"
-              defaultValue={this.state.minorCost}
-              onChange={this.handlePriceChange}
-              type="number"
-              inputProps={{step:0.10, min:0.00, max: Number.MAX_SAFE_INTEGER}}
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              margin="normal"
-            />
-            <TextField
-              id="standard-number"
+              hinttext="Minor Treatment Cost" 
+              value={this.state.minorCost}
+              decimalScale={2}
+              mask={'_'}
+              fixedDecimalScale={true} 
+              customInput={TextField} 
+              className= {classes.textField} 
+              thousandSeparator={true} prefix={'$'}
+              onChange={(e)=>this.setState({minorCost:e.target.value})}
+              inputMode="number"/>
+            <NumberFormat 
               label="Major Treatment Cost"
-              defaultValue={this.state.majorCost}
-              onChange={this.handlePriceChange}
-              type="number"
-              inputProps={{step:0.10, min:0.00, max: Number.MAX_SAFE_INTEGER}}
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              margin="normal"
-            />
+              hinttext="Major Treatment Cost" 
+              value={this.state.majorCost}
+              decimalScale={2}
+              mask={'_'}
+              fixedDecimalScale={true} 
+              customInput={TextField} 
+              className= {classes.textField} 
+              thousandSeparator={true}
+              prefix={'$'}
+              onChange={(e)=>this.setState({majorCost:e.target.value})}
+              inputMode="number"/>
             <Button
               type="submit"
               onClick={ this.onSubmit }
@@ -180,10 +186,11 @@ class AdminPanel extends React.Component{
                   : 'Create new game')
                 }
             </Button>
-            {
-              moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
-            }
           </FormControl>
+
+          {
+            moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
+          }
       </div>
       )
     }
@@ -194,8 +201,8 @@ class AdminPanel extends React.Component{
         startTime: moment(this.state.startTime).format("YYYY-MM-DDThh:mm"),
         roundTime: this.state.time,
         numberOfDoctors: this.state.numberOfDoctors,
-        minorCost : this.state.minorCost,
-        majorCost : this.state.majorCost
+        minorCost : numeral(this.state.minorCost).value(),
+        majorCost : numeral(this.state.majorCost).value()
       }
       this.setState({ gamePending: true });
       this.setState({ gameId: (await firebase.createGame(params)).id } );
