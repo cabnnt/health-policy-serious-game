@@ -46,6 +46,7 @@ export default class Firebase {
 
   async createGame(params) {
     return await this.db.collection('games').add({
+      name : params.name,
       createdAt: firestore.Timestamp.fromDate(new Date()),
       roundTime : params.roundTime,
       startTime: params.startTime,
