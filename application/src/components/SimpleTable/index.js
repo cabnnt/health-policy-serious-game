@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import JoinButton from '../JoinButton';
+import JoinGameButton from '../GameButtons/JoinGameButton';
 
 const styles = theme => ({
   root: {
@@ -52,7 +52,7 @@ const SimpleTable = props => {
                             component='th'
                             scope='row'>
                             { row[attribute] }
-                            <JoinButton gameId={ row.id } />
+                            <JoinGameButton gameId={ row.id } />
                           </TableCell>
                         : <TableCell>{ row[attribute] }</TableCell>
                     );

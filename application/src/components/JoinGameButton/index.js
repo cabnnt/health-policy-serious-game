@@ -1,11 +1,11 @@
 import Button from '@material-ui/core/Button';
 import React from 'react';
-import { withAuthorization } from '../Authorization/context';
+import { withAuthorization } from '../../Authorization/context';
 import { withRouter } from 'react-router-dom';
-import { withFirebase } from '../Firebase';
+import { withFirebase } from '../../Firebase';
 import firebase from 'firebase';
 
-const JoinButton = (props) => {
+const JoinGameButton = (props) => {
   const { authUser, history, gameId } = props;
 
   const handleJoin = async (event) => {
@@ -59,4 +59,4 @@ const JoinButton = (props) => {
   </Button>)
 }
 
-export default withFirebase(withRouter(withAuthorization(JoinButton)));
+export default withFirebase(withRouter(withAuthorization(JoinGameButton)));
