@@ -92,14 +92,13 @@ class Lobby extends React.Component{
                 ? gameExists
                   ? isDoctor
                     ? <TreatmentPanel doctorId={ authUser.id } />
-                    : isPlayer
-                      ? <div>
+                     :  <div>
                           <Countdown gameInfo={ authUser }/>
                           <DoctorDisplayList
                             gameId={ gameId }
                           />
                         </div>
-                      : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
+                      // : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
                   : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
                 : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
             }
