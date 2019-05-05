@@ -84,7 +84,7 @@ class Lobby extends React.Component{
                 ? gameExists
                   ? isDoctor
                     ? <TreatmentPanel doctorId={ authUser.id } />
-                    : isPlayer
+                    : isPlayer || authUser.role === 'teacher'
                       ? <div>
                           <Countdown gameInfo={ authUser }/>
                           <DoctorDisplayList
