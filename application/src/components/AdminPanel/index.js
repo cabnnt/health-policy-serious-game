@@ -86,7 +86,6 @@ class AdminPanel extends React.Component{
               style={{marginLeft:10}}
               value={this.state.time}
               onChange={this.handleMenuChange}
-              placeholder={"Foo"}
               inputProps={
                 {
                   name: 'time',

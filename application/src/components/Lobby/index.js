@@ -1,3 +1,4 @@
+import Countdown from '../Countdown';
 import DoctorDisplayList from '../DoctorDisplayList';
 import Paper from '@material-ui/core/Paper';
 import queryString from 'query-string';
@@ -8,7 +9,8 @@ import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
 
-class Lobby extends Component {
+
+class Lobby extends React.Component{
     constructor(props){
       super(props);
       this.state = {
@@ -83,9 +85,12 @@ class Lobby extends Component {
                   ? isDoctor
                     ? <TreatmentPanel doctorId={ authUser.id } />
                     : isPlayer
-                      ? <DoctorDisplayList
-                          gameId={ gameId }
-                        />
+                      ? <div>
+                          <Countdown gameInfo={ authUser }/>
+                          <DoctorDisplayList
+                            gameId={ gameId }
+                          />
+                        </div>
                       : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
                   : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
                 : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
