@@ -1,13 +1,16 @@
+import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withFirebase } from '../Firebase';
+import TreatmentButton from './TreatmentButton';
 
 class TreatmentPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       doctor: null,
+      currentPatient: null,
       queue: [],
     }
     this.doctorListener = null;
@@ -33,13 +36,31 @@ class TreatmentPanel extends Component {
       });
   }
 
+  startTreatment() {
+    const { queue } = this.state;
+    this.setState({ currentPatient: queue.shift() });
+  }
+
+  cancelTreatment() {
+    const { queue, currentPatient } = this.state;
+    this.setState({
+      currentPatient: null,
+      queue: [currentPatient, ...queue],
+    })
+  }
+
   componentWillUnmount() {
+    const { currentPatient } = this.state;
     this.doctorListener && this.doctorListener();
+    
+    if (currentPatient) {
+      this.cancelTreatment();
+    }
   }
 
   render() {
-    const { doctor, queue } = this.state;
-    const currentPatient = queue.length > 0 ? queue[0] : null;
+    const { doctor, queue, currentPatient } = this.state;
+    console.log(this.state);
 
     return(
       doctor
@@ -49,15 +70,38 @@ class TreatmentPanel extends Component {
             {
               currentPatient
                 ? `You are currently treating: ${currentPatient}.`
-                : `You currently have no patients to treat.`
+                : `You are not currently treating anybody.`
             }
           </Typography>
           <Typography style={{ margin: 5 }} variant='body2'>
             There are currently { queue.length } patient(s) waiting to see you.
           </Typography>
-          <button onClick={() => {}}>
-            Next patient
-          </button>
+          {
+            currentPatient
+              ? <div>
+                  <TreatmentButton
+                    buttonText={ 'Cancel treatment' }
+                    onClick={ this.cancelTreatment.bind(this) }
+                    disabled={ false }
+                  />
+                  <TreatmentButton
+                    buttonText={ 'Finish treatment' }
+                    onClick={() => console.log('finish')}
+                    disabled={ false }
+                  />
+                </div>
+              : <TreatmentButton
+                  buttonText={ 'Next patient' }
+                  onClick={ this.startTreatment.bind(this) }
+                  disabled={ queue.length > 0 }
+                />
+          }
+          <Prompt
+            when={ !!currentPatient }
+            message={
+              `Navigating away will cancel treatment without saving changes.`
+            }
+          />
         </div>
       : null
     )
