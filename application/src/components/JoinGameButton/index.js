@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../../Firebase';
 import firebase from 'firebase';
 
+
 const JoinGameButton = (props) => {
   const { authUser, history, gameId } = props;
 
@@ -58,5 +59,7 @@ const JoinGameButton = (props) => {
     Join
   </Button>)
 }
+
+
 
 export default withFirebase(withRouter(withAuthorization(JoinGameButton)));

@@ -41,11 +41,6 @@ class QueueList extends Component {
 
   }
 
-  onClickExitQueue(name) {
-    alert("yayayyy");
-
-  }
-
 
   render() {
     const { classes } = this.props;
@@ -60,8 +55,7 @@ class QueueList extends Component {
             name={ queue.id }
             renderQueue={ this.state.renderedQueue === queue.id }
             onClickJoinQueue={ this.onClickJoinQueue.bind(this, queue.id)} />;
-           // onClickExitQueue={ this.onClickJoinQueue.bind(this, null)} />;
-            
+        
         
           })
       )

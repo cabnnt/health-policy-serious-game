@@ -27,6 +27,7 @@ class WaitingRoom extends React.Component {
           document.data().players.forEach(
             username => this.addUser(username)
           )
+          
         } else {
           this.setState({ gameExists: false })
         }

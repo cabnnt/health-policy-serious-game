@@ -60,7 +60,7 @@ class DoctorDisplay extends Component {
     const { doctor, gameId, authUser, classes, onChangeQueue } = this.props;
     const { queue } = this.state;
     const selected = authUser.currentQueue === doctor.id;
-
+    
     return(
       authUser
       ? <Card className={classes.card}>

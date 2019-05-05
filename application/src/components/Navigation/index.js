@@ -11,6 +11,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { withFirebase } from '../Firebase';
+
+import 'firebase/firestore';
+import { firestore } from 'firebase';
+
+//import JoinGameButton from '../JoinGameButton';
+
 
 const styles = NavigationStyles;
 
@@ -18,21 +25,59 @@ class Navigation extends Component {
   constructor(props) {
     super(props);
     this.state = { value: 0 };
-    
+
+    this.listener = null;
     const { authUser } = this.props;
     const showAdmin = authUser.role === 'teacher';
     const gamesListLabel = showAdmin ? 'Current games' : 'Join game';
+   
+   
+    this.state = {
+      inGame:false,
+      firstGameJoined:false
 
+    }
+    
     this.menuTabs = [
       { label: gamesListLabel, pathnames: ['/home', '/'] },
-      { label: 'Current Game', pathnames: ['/game'] },
       { label: 'Account', pathnames: ['/account'] },
       { label: 'Sign Out', pathnames: ['/signout'] }
     ]
 
+
     if (showAdmin) {
       this.menuTabs.unshift({ label: 'Create game', pathnames: ['/admin'] })
     }
+  }
+
+
+  componentDidMount() {
+  
+    if(this.props.authUser && !this.props.firstGameJoined){
+      
+      const firestore = this.props.firebase.db; // this is our "firestore"
+      this.listener = firestore
+      .collection('users')
+      .doc(this.props.authUser.id) // you'll need to specify what is to be listened to in the DB
+      .onSnapshot(userDocument =>
+        {
+          const { currentGame } = userDocument.data(); // remember you're interacting with the DB here
+          
+          if(this.props.authUser.currentGame) {
+            this.setState({inGame: true});
+            this.setState({firstGameJoined: true});
+            
+           
+          }
+         
+          //this.setState({ inGame: !!currentGame });
+        });
+    }
+  
+  }
+
+  componentWillUnmount() {
+    this.listener && this.listener();
   }
 
   handleChange = (event, value) => {
@@ -47,8 +92,17 @@ class Navigation extends Component {
   }
 
   render() {
+    const { inGame } = this.state;
+    const { firstGameJoined } = this.state;
     const { classes } = this.props;
     const { authUser } = this.props;
+
+
+    if (inGame && !firstGameJoined) {
+      this.menuTabs.unshift({ label: 'Current Game', pathnames: ['/game'] })
+      this.setState({inGame: false});
+    }
+   
 
     return (
       authUser ?
@@ -79,8 +133,8 @@ class Navigation extends Component {
                             to={
                               pathname.match(new RegExp(/(game)/))
                                 ? (authUser.currentGame
-                                  ? `${pathname}?gameId=${authUser.currentGame}`
-                                  : `${pathname}`
+                                  ? `${pathname}?gameId=${authUser.currentGame}`     
+                                  : `${pathname}` 
                                 )
                                 : pathname
                             }
@@ -98,5 +152,5 @@ class Navigation extends Component {
     )
   }
 }
-
-export default withRouter(withAuthorization(withStyles(styles)(Navigation)));
+//export default withAuthorization(withFirebase(Navigation));
+export default withRouter(withFirebase(withAuthorization(withStyles(styles)(Navigation))));
