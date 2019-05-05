@@ -73,7 +73,6 @@ class Lobby extends Component {
       const { loading, gameExists, isDoctor, isPlayer } = this.state;
       const { location, authUser } = this.props;
       const { gameId } = queryString.parse(location.search);
-      console.log(this.state);
 
       return (
         authUser ?
