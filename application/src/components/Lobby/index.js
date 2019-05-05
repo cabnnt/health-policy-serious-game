@@ -9,6 +9,14 @@ import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
 
+const styles = {
+    doctor: {
+        display: 'inline-block',
+        margin: 10,
+        color:"red",
+        backgroundColor:"blue",
+    }
+}
 
 class Lobby extends React.Component{
     constructor(props){
