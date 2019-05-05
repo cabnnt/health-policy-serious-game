@@ -13,15 +13,16 @@ class Lobby extends Component {
     constructor(props){
       super(props);
       this.state = {
-        loaded: false,
+        loading: true,
         gameExists: false,
+        isPlayer: false,
         doctors: [],
         isDoctor: false,
       }
       this.doctorsListener = null;
     }
 
-    componentDidMount() {
+    componentWillMount() {
       const { location } = this.props;
       const firestore = this.props.firebase.db;
       const { search } = location;
@@ -32,26 +33,32 @@ class Lobby extends Component {
         .get()
         .then(gameDocument => {
           const gameExists = !!gameDocument && gameDocument.exists;
+          const { authUser } = this.props;
           
-          if (gameExists) {
-            this.doctorsListener = gameRequest
-              .collection('doctors')
-              .onSnapshot(async doctorCollection => {
-                await doctorCollection.forEach(doctor => {
+          if (authUser && gameExists) {
+            const { players } = gameDocument.data();
+
+            if (players.includes(authUser.username)) {
+              this.setState({ isPlayer: true });
+
+              this.doctorsListener = gameRequest
+                .collection('doctors')
+                .onSnapshot(async doctorCollection => {
+                  await doctorCollection.forEach(doctor => {
+                    const { doctors } = this.state;
+                    this.setState({
+                      doctors: doctors.concat(doctor.data()),
+                    });
+                  });
+
                   const { doctors } = this.state;
                   this.setState({
-                    doctors: doctors.concat(doctor.data()),
+                    gameExists: true,
+                    isDoctor: doctors.filter(doctor => doctor.id === authUser.id).length > 0,
+                    loading: false,
                   });
                 });
-
-                const { authUser } = this.props;
-                const { doctors } = this.state;
-                this.setState({
-                  gameExists: true,
-                  isDoctor: doctors.filter(doctor => doctor.id === authUser.id).length > 0,
-                  loaded: true,
-                })
-              });
+            }
           }
         })
     }
@@ -61,19 +68,23 @@ class Lobby extends Component {
     }
     
     render() {
-      const { loaded, gameExists, doctors, isDoctor } = this.state;
+      const { loading, gameExists, doctors, isDoctor, isPlayer } = this.state;
       const { location, authUser } = this.props;
       const { gameId } = queryString.parse(location.search);
 
       return (
         <Paper style={{ margin: 10 }}>
           {
-            loaded
-              ? isDoctor
-                ? <TreatmentPanel doctorId={ authUser.id } />
-                : <DoctorDisplayList
-                    gameId={ gameId }
-                  />
+            !loading
+              ? gameExists 
+                ? isDoctor
+                  ? <TreatmentPanel doctorId={ authUser.id } />
+                  : isPlayer
+                    ? <DoctorDisplayList
+                        gameId={ gameId }
+                      />
+                    : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
+                : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
               : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
           }
         </Paper>
