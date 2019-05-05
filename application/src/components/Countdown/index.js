@@ -13,7 +13,7 @@ const PRODUCTION_SECONDS = 60000
 const DEV_SECONDS = 1000
 const Complete = () => <span>You have completed the game </span>
 const renderer = ({ hours, minutes, seconds, completed }) => {
-    return completed ? <span>{hours}:{minutes}:{seconds}</span>;
+    return <span>{hours}:{minutes}:{seconds}</span>;
   };
 class Countdown extends React.Component{
     
