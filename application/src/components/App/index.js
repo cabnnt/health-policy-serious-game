@@ -45,7 +45,7 @@ class App extends Component {
     return(
       <AuthorizationContext.Provider value={ authUser }>
         <Router>
-          { authUser ? <Navigation /> : null }
+          { authUser ? <Navigation value={authUser}/> : null }
           <div>
             <Route
               exact
@@ -58,7 +58,7 @@ class App extends Component {
             <Route path={ ROUTES.SIGN_IN } component={ Landing } />
             <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
             <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
-            <Route path={ ROUTES.GAME } component={ Lobby } />
+            <Route path={ ROUTES.GAME } render = {(props)=><Lobby {...props} authUser={authUser}/>} />
             <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
           </div>
         </Router>
