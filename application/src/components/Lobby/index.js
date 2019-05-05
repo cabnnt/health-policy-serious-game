@@ -4,7 +4,6 @@ import queryString from 'query-string';
 import React, { Component } from 'react';
 import TreatmentPanel from '../TreatmentPanel';
 import Typography from '@material-ui/core/Typography';
-import WaitingRoom from '../WaitingRoom';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
@@ -16,13 +15,12 @@ class Lobby extends Component {
         loading: true,
         gameExists: false,
         isPlayer: false,
-        doctors: [],
         isDoctor: false,
       }
-      this.doctorsListener = null;
+      this.doctors = [];
     }
 
-    componentWillMount() {
+    componentDidMount() {
       const { location } = this.props;
       const firestore = this.props.firebase.db;
       const { search } = location;
@@ -36,58 +34,65 @@ class Lobby extends Component {
           const { authUser } = this.props;
           
           if (authUser && gameExists) {
-            const { players } = gameDocument.data();
-
-            if (players.includes(authUser.username)) {
-              this.setState({ isPlayer: true });
-
-              this.doctorsListener = gameRequest
-                .collection('doctors')
-                .onSnapshot(async doctorCollection => {
-                  await doctorCollection.forEach(doctor => {
-                    const { doctors } = this.state;
-                    this.setState({
-                      doctors: doctors.concat(doctor.data()),
-                    });
-                  });
-
-                  const { doctors } = this.state;
-                  this.setState({
-                    gameExists: true,
-                    isDoctor: doctors.filter(doctor => doctor.id === authUser.id).length > 0,
-                    loading: false,
-                  });
+            this.doctorsListener = gameRequest
+              .collection('doctors')
+              .get()
+              .then(doctorCollection => {
+                doctorCollection.forEach(doctor => {
+                  this.doctors = this.doctors.concat(doctor.data());
                 });
-            }
+              }).then(() => {
+                this.setState({
+                  gameExists: true,
+                  isDoctor: this.doctors.filter(doctor => doctor.id === authUser.id).length > 0,
+                  loading: false,
+                });
+              });
           }
         })
-    }
+        .then(async () => {
+          const { loading } = this.state;
+          const gameDocument = await gameRequest.get();
+          const gameExists = !!gameDocument && gameDocument.exists;
+          const { players } = gameDocument
+            ? gameDocument.exists && gameDocument.data()
+            : null;
+          const isPlayer = players ? players.includes(this.props.authUser.username) : false;
 
-    componentWillUnmount() {
-      this.doctorsListener && this.doctorsListener();
+          if (loading) {
+            this.setState({
+              gameExists: gameExists,
+              loading: false,
+              isPlayer: isPlayer
+            });
+          }
+        });
     }
     
     render() {
-      const { loading, gameExists, doctors, isDoctor, isPlayer } = this.state;
+      const { loading, gameExists, isDoctor, isPlayer } = this.state;
       const { location, authUser } = this.props;
       const { gameId } = queryString.parse(location.search);
+      console.log(this.state);
 
       return (
-        <Paper style={{ margin: 10 }}>
-          {
-            !loading
-              ? gameExists 
-                ? isDoctor
-                  ? <TreatmentPanel doctorId={ authUser.id } />
-                  : isPlayer
-                    ? <DoctorDisplayList
-                        gameId={ gameId }
-                      />
-                    : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
-                : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
-              : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
-          }
-        </Paper>
+        authUser ?
+          <Paper style={{ margin: 10 }}>
+            {
+              !loading
+                ? gameExists
+                  ? isDoctor
+                    ? <TreatmentPanel doctorId={ authUser.id } />
+                    : isPlayer
+                      ? <DoctorDisplayList
+                          gameId={ gameId }
+                        />
+                      : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
+                  : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
+                : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
+            }
+          </Paper>
+          : null
       )
     }
 }
