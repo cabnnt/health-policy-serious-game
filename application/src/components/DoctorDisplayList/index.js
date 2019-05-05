@@ -88,9 +88,10 @@ class DoctorDisplayList extends Component {
   render() {
     const { gameId, doctors, currentQueueDoctorId } = this.state;
     const { authUser, classes } = this.props;
-    const patientId = authUser.id;
+    const patientId = authUser ? authUser.id : null;
     return (
-      <Paper className={ classes.main }>
+      authUser
+      ? <Paper className={ classes.main }>
         {
           doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
             return (
@@ -104,6 +105,7 @@ class DoctorDisplayList extends Component {
           })
         }
       </Paper>
+      : null
     )
   }
 }

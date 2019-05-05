@@ -62,39 +62,41 @@ class DoctorDisplay extends Component {
     const selected = authUser.currentQueue === doctor.id;
 
     return(
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography className={classes.title} color="textSecondary" gutterBottom>
-            Dr. { doctor.username }
-          </Typography>
-          <Typography component="p">
-            Queue length: { queue ? queue.length : 0 }
-          </Typography>
-          {
-            selected
-            ? <Typography component="p">
-                You are number <b>
-                  { queue.indexOf(authUser.id) + 1 }
-                </b> in the queue, with <b>
-                  { queue.length - 1 - queue.indexOf(authUser.id) }
-                </b> patient(s) behind you.
-              </Typography>
-            : null
-          }
-        </CardContent>
-        <CardActions>
-          {
-            authUser
-              ? <JoinQueueButton
-                  doctorId={ doctor.id }
-                  gameId={ gameId }
-                  patientId={ authUser.id }
-                  disabled={ authUser.role === 'teacher' || selected }
-                  onChangeQueue={ onChangeQueue } />
+      authUser
+      ? <Card className={classes.card}>
+          <CardContent>
+            <Typography className={classes.title} color="textSecondary" gutterBottom>
+              Dr. { doctor.username }
+            </Typography>
+            <Typography component="p">
+              Queue length: { queue ? queue.length : 0 }
+            </Typography>
+            {
+              selected
+              ? <Typography component="p">
+                  You are number <b>
+                    { queue.indexOf(authUser.id) + 1 }
+                  </b> in the queue, with <b>
+                    { queue.length - 1 - queue.indexOf(authUser.id) }
+                  </b> patient(s) behind you.
+                </Typography>
               : null
-          }
-        </CardActions>
-      </Card>
+            }
+          </CardContent>
+          <CardActions>
+            {
+              authUser
+                ? <JoinQueueButton
+                    doctorId={ doctor.id }
+                    gameId={ gameId }
+                    patientId={ authUser.id }
+                    disabled={ authUser.role === 'teacher' || selected }
+                    onChangeQueue={ onChangeQueue } />
+                : null
+            }
+          </CardActions>
+        </Card>
+      : null
     )
   }
 }
