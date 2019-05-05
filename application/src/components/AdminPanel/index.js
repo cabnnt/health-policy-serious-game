@@ -92,14 +92,12 @@ class AdminPanel extends React.Component{
       const { firebase } = this.props;
       return (
         <div>
-        
         <FormControl className={classes.formControl}>
         <InputLabel style={{marginLeft:10, marginTop:10}}>Round-Time</InputLabel>
             <Select
               style={{marginLeft:10}}
               value={this.state.time}
               onChange={this.handleMenuChange}
-              placeholder={"Foo"}
               inputProps={
                 {
                 name: 'time',
