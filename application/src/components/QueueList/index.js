@@ -38,12 +38,10 @@ class QueueList extends Component {
 
   onClickJoinQueue(name) {
     this.setState({ renderedQueue: name });
-
   }
 
-  onClickExitQueue(name) {
+  onClickExitQueue() {
     alert("yayayyy");
-
   }
 
 
@@ -51,7 +49,7 @@ class QueueList extends Component {
     const { classes } = this.props;
     const { queues } = this.state;
   
-   return(
+    return(
       queues.map(
         ((queue, index) => {
           return <SimplePopper
@@ -59,14 +57,11 @@ class QueueList extends Component {
             key={ queue.id }
             name={ queue.id }
             renderQueue={ this.state.renderedQueue === queue.id }
-            onClickJoinQueue={ this.onClickJoinQueue.bind(this, queue.id)} />;
-           // onClickExitQueue={ this.onClickJoinQueue.bind(this, null)} />;
-            
-        
-          })
+            onClickJoinQueue={ this.onClickJoinQueue.bind(this, queue.id)}
+            onClickExitQueue={ this.onClickJoinQueue.bind(this)} />;
+        })
       )
     );
-    
   }
  
 }

@@ -65,6 +65,8 @@ class DoctorDisplayList extends Component {
   }
 
   leaveQueue(gameId, doctorId, patientId) {
+    const { authUser } = this.props;
+
     this.firestore
       .collection('games')
       .doc(gameId)
@@ -72,6 +74,10 @@ class DoctorDisplayList extends Component {
       .doc(doctorId)
       .update({
         queue: firebase.firestore.FieldValue.arrayRemove(patientId)
+      })
+      .then(() => {
+        authUser.currentQueue = null;
+        this.setState({ currentQueueDoctorId: null });
       });
   }
 
@@ -100,7 +106,9 @@ class DoctorDisplayList extends Component {
                 selected={ currentQueueDoctorId === doctor.id }
                 doctor={ doctor }
                 gameId={ gameId }
-                onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) } />
+                onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) }
+                onExitQueue={ this.leaveQueue.bind(this, gameId, doctor.id, patientId) }
+              />
             );
           })
         }

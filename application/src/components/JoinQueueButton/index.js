@@ -6,7 +6,6 @@ import { withAuthorization } from '../Authorization/context';
 
 const JoinQueueButton = props => {
   const { gameId, doctorId, patientId, disabled } = props;
-  const firestore = props.firebase.db;
   
   const handleJoinQueue = () => {
     const { onChangeQueue } = props;

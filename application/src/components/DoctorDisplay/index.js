@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import ExitQueueButton from '../ExitQueueButton';
 import JoinQueueButton from '../JoinQueueButton';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
@@ -28,10 +28,10 @@ const styles = {
 class DoctorDisplay extends Component {
   constructor(props) {
     super(props)
+
     this.doctorListener = null;
     this.state = {
-      queue: [],
-      selected: false,
+      queue: null,
     }
   }
 
@@ -47,7 +47,7 @@ class DoctorDisplay extends Component {
       .onSnapshot(doctorDocument => {
         const { queue } = doctorDocument.data();
         this.setState({
-          queue: queue
+          queue: queue,
         });
       })
   }
@@ -57,9 +57,8 @@ class DoctorDisplay extends Component {
   }
 
   render() {
-    const { doctor, gameId, authUser, classes, onChangeQueue } = this.props;
+    const { doctor, gameId, authUser, classes, selected, onChangeQueue, onExitQueue } = this.props;
     const { queue } = this.state;
-    const selected = authUser.currentQueue === doctor.id;
 
     return(
       authUser
@@ -86,12 +85,22 @@ class DoctorDisplay extends Component {
           <CardActions>
             {
               authUser
-                ? <JoinQueueButton
-                    doctorId={ doctor.id }
-                    gameId={ gameId }
-                    patientId={ authUser.id }
-                    disabled={ authUser.role === 'teacher' || selected }
-                    onChangeQueue={ onChangeQueue } />
+                ? authUser.role === 'teacher'
+                  ? null
+                  : selected
+                    ? <ExitQueueButton
+                        doctorId={ doctor.id }
+                        gameId={ gameId }
+                        patientId={ authUser.id }
+                        onExitQueue={ onExitQueue }
+                      />
+                    : <JoinQueueButton
+                        doctorId={ doctor.id }
+                        gameId={ gameId }
+                        patientId={ authUser.id }
+                        disabled={ selected }
+                        onChangeQueue={ onChangeQueue }
+                      />
                 : null
             }
           </CardActions>
