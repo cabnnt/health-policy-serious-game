@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { withAuthorization } from '../../Authorization/context';
 import { withRouter } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { withFirebase } from '../../Firebase';
 import firebase from 'firebase';
 
 const JoinGameButton = (props) => {
-  const { authUser, history, gameId } = props;
+  const { authUser, history, gameId, disabled } = props;
 
   const handleJoin = async (event) => {
     const firestore = props.firebase.db;
@@ -46,17 +47,24 @@ const JoinGameButton = (props) => {
         });
     }
   }
-  // We can set this up on the button once we are done testing:
-  //  disabled={authUser && (
-  //     !!authUser.currentGame 
-  //    || authUser.role === 'teacher'
-  //  )}
-  return(<Button
-    onClick={event => {
-      handleJoin(event)
-    }}>
-    Join
-  </Button>)
+  
+  return(
+    <Button
+      disabled={ disabled }
+      onClick={
+        event => {
+          handleJoin(event)
+        }
+      }
+    >
+      Join
+    </Button>
+  );
 }
+
+JoinGameButton.propTypes = {
+  gameId: PropTypes.string.isRequired,
+  disabled: PropTypes.bool.isRequired,
+};
 
 export default withFirebase(withRouter(withAuthorization(JoinGameButton)));
