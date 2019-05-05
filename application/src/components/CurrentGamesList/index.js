@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
+import { Paper } from '@material-ui/core';
 import SimpleTable from '../SimpleTable';
 import Typography from '@material-ui/core/Typography';
 import moment from 'moment';
@@ -9,7 +10,7 @@ import moment from 'moment';
 class CurrentGamesList extends Component {
   constructor(props) {
     super(props);
-    this.state = { games: [] };
+    this.state = { loading: true, games: [] };
     this.currentGamesListener = null;
   }
 
@@ -26,15 +27,16 @@ class CurrentGamesList extends Component {
         collection.forEach(
           document => this.addGame(document)
         )
+
+        this.setState({ loading: false });
       });
   }
 
   componentWillUnmount() {
-    this.currentGamesListener();
+    this.currentGamesListener && this.currentGamesListener();
   }
 
   addGame = gameRecord => {
-    console.log(gameRecord);
     const { games } = this.state;
     const game = { id: gameRecord.id, ...gameRecord.data() };
     const gameIds = games.map(game => game.id);
@@ -45,26 +47,24 @@ class CurrentGamesList extends Component {
   }
 
   render() {
-    const { games } = this.state;
+    const { games, loading } = this.state;
 
     return (
-      <div>
-        <Typography style={ { margin: '10px' } } variant='h5'>Current games</Typography>
+      <Paper style={{ margin: 10 }}>
         {
-          this.currentGamesListener && !games.length
-            ? 'No current games found.'
-            : (
-              !games.length
-                ? 'Loading games...'
-                : <SimpleTable
-                    collection={ games }
-                    attributes={ ['name'] }
-                    headers={
-                      { name: 'Games'}
-                    } />
-            )
+          !loading
+            ? games.length === 0
+              ? <Typography style={{ margin: 5 }} variant='body2'>No current games found.</Typography>
+              : <SimpleTable
+                  collection={ games }
+                  attributes={ ['name'] }
+                  headers={
+                    { name: 'Current games'}
+                  }
+                />
+            : <Typography style={{ margin: 5 }} variant='body2'>Loading games...</Typography>
         }
-      </div>
+      </Paper>
     );
   }
 }
