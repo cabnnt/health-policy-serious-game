@@ -7,7 +7,7 @@ const ExitQueueButton = (props) => {
   
   const handleExitQueue = () => {
     const { onExitQueue } = props;
-    onExitQueue(gameId, doctorId, patientId);
+    onExitQueue(gameId, doctorId, patientId, true);
   }
 
   return(
