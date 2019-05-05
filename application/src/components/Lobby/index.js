@@ -4,6 +4,8 @@ import WaitingRoom from '../WaitingRoom';
 import { withStyles } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
+import Countdown from '../Countdown';
+
 const styles = {
     doctor: {
         display: 'inline-block',
@@ -20,7 +22,10 @@ class Lobby extends React.Component{
     
     render(){
       return (
-        <DoctorDisplayList />
+        <div>
+          <Countdown gameInfo = {this.props.authUser}/>
+          <DoctorDisplayList authUser= {this.props.authUser}/>
+        </div>
       )
     }
 }
