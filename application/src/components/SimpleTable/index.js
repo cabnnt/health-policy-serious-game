@@ -37,6 +37,7 @@ const SimpleTable = props => {
                 );
               })
             }
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -50,14 +51,17 @@ const SimpleTable = props => {
                         ? <TableCell
                             key={ row[attribute] }
                             component='th'
-                            scope='row'>
+                            scope='row'
+                          >
                             { row[attribute] }
-                            <AuthorizedGameButtons gameId={ row.id } />
                           </TableCell>
                         : <TableCell>{ row[attribute] }</TableCell>
                     );
                   })
                 }
+                <TableCell>
+                  <AuthorizedGameButtons gameId={ row.id } />
+                </TableCell>
               </TableRow>
             ))
           }
