@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import DoctorDisplay from '../DoctorDisplay';
-import Paper from '@material-ui/core/Paper';
 import queryString from 'query-string';
-import TreatmentPanel from '../TreatmentPanel';
 import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../Firebase';
-import { withStyles } from '@material-ui/core/styles';
 import firebase from 'firebase';
-
-const styles = {
-  main: {
-    margin: 10
-  }
-}
 
 class DoctorDisplayList extends Component {
   constructor(props) {
@@ -113,35 +104,30 @@ class DoctorDisplayList extends Component {
 
   render() {
     const { gameId, doctors, currentQueueDoctorId, loaded, numberOfDoctors } = this.state;
-    const { authUser, classes } = this.props;
+    const { authUser } = this.props;
     const patientId = authUser ? authUser.id : null;
-    console.log(loaded);
 
     return (
-      <Paper className={ classes.main }>
-        {
-          loaded
-            ? doctors.length === 0 || doctors.length < numberOfDoctors
-              ? <Typography style={{ margin: 5 }} variant='body2'>Waiting on { numberOfDoctors - doctors.length } doctors to join the game...</Typography>
-              : authUser
-                ? doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
-                    return (
-                      <DoctorDisplay
-                        key={ doctor.id }
-                        selected={ currentQueueDoctorId === doctor.id }
-                        doctor={ doctor }
-                        gameId={ gameId }
-                        onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) }
-                        onExitQueue={ this.leaveQueue.bind(this, gameId, doctor.id, patientId) }
-                      />
-                    );
-                  })
-                  : null
-            : <Typography style={{ margin: 5 }} variant='body2'>Loading doctors...</Typography>
-        }
-      </Paper>
+      loaded
+        ? doctors.length === 0 || doctors.length < numberOfDoctors
+          ? <Typography style={{ margin: 5 }} variant='body2'>Waiting on { numberOfDoctors - doctors.length } doctors to join the game...</Typography>
+          : authUser
+            ? doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
+                return (
+                  <DoctorDisplay
+                    key={ doctor.id }
+                    selected={ currentQueueDoctorId === doctor.id }
+                    doctor={ doctor }
+                    gameId={ gameId }
+                    onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) }
+                    onExitQueue={ this.leaveQueue.bind(this, gameId, doctor.id, patientId) }
+                  />
+                );
+              })
+              : null
+        : <Typography style={{ margin: 5 }} variant='body2'>Loading doctors...</Typography>
     )
   }
 }
 
-export default withAuthorization(withFirebase(withRouter(withStyles(styles)(DoctorDisplayList))));
+export default withAuthorization(withFirebase(withRouter(DoctorDisplayList)));

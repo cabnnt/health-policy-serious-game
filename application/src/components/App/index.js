@@ -11,7 +11,6 @@ import AuthorizationContext, { withAuthorization } from '../Authorization/contex
 import { withFirebase } from '../Firebase';
 import SignOutButton from '../SignOut';
 import Lobby from '../Lobby';
-import WaitingRoom from '../WaitingRoom';
 
 class App extends Component {
   constructor(props) {
@@ -36,7 +35,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this.listener();
+    this.listener && this.listener();
   }
 
   render() {
@@ -46,21 +45,19 @@ class App extends Component {
       <AuthorizationContext.Provider value={ authUser }>
         <Router>
           { authUser ? <Navigation /> : null }
-          <div>
-            <Route
-              exact
-              path={ ROUTES.LANDING }
-              render={
-                () => authUser
-                  ? <Home />
-                  : <Landing /> } />
-            <Route path={ ROUTES.HOME } component={ Home } />
-            <Route path={ ROUTES.SIGN_IN } component={ Landing } />
-            <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
-            <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
-            <Route path={ ROUTES.GAME } component={ Lobby } />
-            <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
-          </div>
+          <Route
+            exact
+            path={ ROUTES.LANDING }
+            render={
+              () => authUser
+                ? <Home />
+                : <Landing /> } />
+          <Route path={ ROUTES.HOME } component={ Home } />
+          <Route path={ ROUTES.SIGN_IN } component={ Landing } />
+          <Route path={ ROUTES.SIGN_UP } component={ SignUp } />
+          <Route path={ ROUTES.ADMIN } component={ AdminPanel } />
+          <Route path={ ROUTES.GAME } component={ Lobby } />
+          <Route path={ ROUTES.SIGN_OUT } component={ SignOutButton } />
         </Router>
       </AuthorizationContext.Provider>
     );
