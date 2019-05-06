@@ -7,6 +7,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
+import _ from 'lodash';
 
 const CERTAINTIES = [
   'Completely uncertain',
@@ -48,15 +49,27 @@ class RecommendationPanel extends Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-    
-    const { certainty, severity, treatment } = this.state;
     const { onSelectionChange } = this.props;
-
+    const diagnosis = { ...Object.assign(
+      this.state,
+      { [event.target.name]: event.target.value }
+    )};
+    
+    Object.keys(diagnosis)
+      .filter(k => !['certainty', 'severity', 'treatment'].includes(k))
+      .forEach(k => {
+        delete diagnosis[k];
+      })
+    Object.keys(diagnosis)
+      .forEach(k => {
+        diagnosis[k] = parseInt(diagnosis[k]);
+      })
+    
+    this.setState({ [event.target.name]: event.target.value });
     onSelectionChange({
-      certainty: CERTAINTIES[parseInt(certainty)],
-      severity: SEVERITIES[parseInt(severity)],
-      treatment: TREATMENTS[parseInt(treatment)],
+      certainty: CERTAINTIES[diagnosis.certainty],
+      severity: SEVERITIES[diagnosis.severity],
+      treatment: TREATMENTS[diagnosis.treatment],
     });
   }
 
