@@ -124,8 +124,8 @@ class DoctorDisplayList extends Component {
               Waiting on { numberOfDoctors - doctors.length } doctor(s) to join the game ({ doctors.length } already joined)...
             </Typography>
           : authUser
-            ? treating
-                ? <PatientDiagnosisPanel doctor={ treating } />
+            ? treating || (treating.diagnosis && Object.keys(treating.diagnosis).includes(patientId))
+                ? <PatientDiagnosisPanel doctor={ treating } patientId={ patientId } gameId={ gameId } />
                 : doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
                     return (
                       <DoctorDisplay
