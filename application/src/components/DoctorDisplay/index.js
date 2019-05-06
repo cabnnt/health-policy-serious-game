@@ -61,7 +61,7 @@ class DoctorDisplay extends Component {
     const { queue } = this.state;
 
     return(
-      authUser
+      authUser && doctor
       ? <Card className={classes.card}>
           <CardContent>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -74,9 +74,9 @@ class DoctorDisplay extends Component {
               selected
               ? <Typography component="p">
                   You are number <b>
-                    { queue.indexOf(authUser.id) + 1 }
+                    { queue ? queue.indexOf(authUser.id) + 1 : -1 }
                   </b> in the queue, with <b>
-                    { queue.length - 1 - queue.indexOf(authUser.id) }
+                    { queue ? queue.length - 1 - queue.indexOf(authUser.id) : -1 }
                   </b> patient(s) behind you.
                 </Typography>
               : null

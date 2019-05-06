@@ -23,7 +23,7 @@ class Countdown extends React.Component{
         this.state = INITIAL_STATE
         this.firestore = this.props.firebase.db;
         this.timerListener = null;
-        console.log(illmatic())
+        // console.log(illmatic())
     }
 
     componentWillUnmount(){

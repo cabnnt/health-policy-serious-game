@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const TreatmentButton = (props) => {
-  const { onClick, buttonText } = props;
+  const { onClick, buttonText, disabled } = props;
 
   return(
-    <Button style={{ margin: 5 }} onClick={ onClick }>
+    <Button style={{ margin: 5 }} onClick={ onClick } disabled={ disabled ? disabled : false }>
       { buttonText }
     </Button>
   )

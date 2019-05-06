@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
+import { illmatic } from '../../js/stringGen';
 
 const styles = {
     doctor: {
@@ -37,9 +38,10 @@ class Lobby extends React.Component{
       const firestore = this.props.firebase.db;
       const { search } = location;
       const { gameId } = queryString.parse(search);
-      const gameRequest = firestore.collection('games').doc(gameId);
+      const gameRequest = gameId ? firestore.collection('games').doc(gameId) : null;
 
-      gameRequest
+      if (gameRequest) {
+        gameRequest
         .get()
         .then(gameDocument => {
           const gameExists = !!gameDocument && gameDocument.exists;
@@ -63,21 +65,28 @@ class Lobby extends React.Component{
           }
         })
         .then(async () => {
+          const { authUser } = this.props
+          console.log(authUser)
           const { loading } = this.state;
           const gameDocument = await gameRequest.get();
           const gameExists = !!gameDocument && gameDocument.exists;
+          const infection = await illmatic();
+          console.log(infection)
           const { players } = gameDocument
             ? gameDocument.exists && gameDocument.data()
             : null;
           const isPlayer = players ? players.includes(this.props.authUser.username) : false;
+          console.log("finna make this entry")
           firestore
           .collection('users')
-          .doc('bE5ewAxAKMNZ2o0mYMyg')
-          .get()
-          .then(record=>{
+          .doc(authUser.id)
+          .update({
+            infectionString : infection[0],
+            isSick : infection[1]
+          }).then(()=>{
             this.setState({
-              isSick : record.get('isSick'),
-              infectionString : record.get('infectionString')
+              infectionString: infection[0],
+              isSick: infection[1]
             })
           })
           if (loading) {
@@ -88,7 +97,13 @@ class Lobby extends React.Component{
             });
           }
         });
-
+      } else {
+        this.setState({
+          gameExists: false,
+          loading: false,
+          isPlayer: false,
+        });
+      }
     }
     
     render() {
@@ -101,9 +116,10 @@ class Lobby extends React.Component{
           <Paper style={{ margin: 10 }}>
             {
               !loading
-                ? gameExists
-                  ? isDoctor
-                    ? <div>
+              ? gameExists
+              ? isDoctor
+              ? <div>
+                        <Typography style={{ margin: 5 }} variant='body2' color='error'>Your name: {authUser.username}</Typography>
                         <Countdown gameInfo={authUser}/>
                         <TreatmentPanel gameId={ gameId } doctorId={ authUser.id } />
                       </div>
