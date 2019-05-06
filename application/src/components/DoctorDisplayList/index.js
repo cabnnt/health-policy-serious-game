@@ -6,6 +6,7 @@ import { withAuthorization } from '../Authorization/context';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../Firebase';
 import firebase from 'firebase';
+import PatientDiagnosisPanel from '../PatientDiagnosisPanel';
 
 class DoctorDisplayList extends Component {
   constructor(props) {
@@ -124,7 +125,7 @@ class DoctorDisplayList extends Component {
             </Typography>
           : authUser
             ? treating
-                ? <Typography style={{ margin: 5 }} variant='body2'>You are being treated by Dr. { treating.username }.</Typography>
+                ? <PatientDiagnosisPanel doctor={ treating } />
                 : doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
                     return (
                       <DoctorDisplay

@@ -97,10 +97,44 @@ class TreatmentPanel extends Component {
   }
 
   finishTreatment() {
-    const { diagnosis } = this.state;
+    const { gameId, doctorId } = this.props;
+    const { diagnosis, currentPatient, queue } = this.state;
+    const firestore = this.props.firebase.db;
+    const doctorReference = gameId && doctorId && diagnosis
+      ? firestore
+          .collection('games')
+          .doc(gameId)
+          .collection('doctors')
+          .doc(doctorId)
+      : null;
     
-    if (diagnosis) {
-      console.log(diagnosis);
+    if (doctorReference) {
+      return firestore
+        .runTransaction(transaction => {
+          return transaction
+            .get(doctorReference)
+            .then(doctorDocument => {
+              if (doctorDocument.exists) {
+                transaction.set(
+                  doctorReference,
+                  {
+                    diagnoses: {
+                      [currentPatient]: diagnosis
+                    },
+                  },
+                  {
+                    merge: true
+                  },
+                );
+                transaction.update(
+                  doctorReference,
+                  {
+                    currentPatient: null,
+                  }
+                );
+              }
+            })
+        });
     }
   }
 
@@ -118,14 +152,14 @@ class TreatmentPanel extends Component {
   }
 
   render() {
-    const { doctor, queue, currentPatient, diagnosis } = this.state;
+    const { doctor, queue, currentPatient } = this.state;
 
     return(
       doctor
       ? 
         <div>
           <Typography style={{ margin: 5 }} variant='body2'>
-            There are currently { queue.length } patient(s) waiting to see you.
+            There are currently { queue ? queue.length : -1 } patient(s) waiting to see you.
           </Typography>
           <Typography style={{ margin: 5 }} variant='body2'>
             {
@@ -146,13 +180,12 @@ class TreatmentPanel extends Component {
                   <TreatmentButton
                     buttonText={ 'Finish treatment' }
                     onClick={ this.finishTreatment.bind(this) }
-                    disabled={ !diagnosis }
                   />
                 </div>
               : <TreatmentButton
                   buttonText={ 'Next patient' }
                   onClick={ this.startTreatment.bind(this) }
-                  disabled={ queue.length === 0 }
+                  disabled={ queue ? queue.length === 0 : true }
                 />
           }
           <Prompt
