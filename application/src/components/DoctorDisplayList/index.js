@@ -112,7 +112,9 @@ class DoctorDisplayList extends Component {
     return (
       loaded
         ? doctors.length === 0 || doctors.length < numberOfDoctors
-          ? <Typography style={{ margin: 5 }} variant='body2'>Waiting on { numberOfDoctors - doctors.length } doctors to join the game...</Typography>
+          ? <Typography style={{ margin: 5 }} variant='body2'>
+              Waiting on { numberOfDoctors - doctors.length } doctor(s) to join the game ({ doctors.length } already joined)...
+            </Typography>
           : authUser
             ? doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
                 return (
