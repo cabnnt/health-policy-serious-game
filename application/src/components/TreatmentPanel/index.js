@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -39,16 +40,47 @@ class TreatmentPanel extends Component {
   }
 
   startTreatment() {
-    const { queue } = this.state;
-    this.setState({ currentPatient: queue.shift() });
+    const firestore = this.props.firebase.db;
+    const { queue, currentPatient } = this.state;
+    const { gameId, doctorId } = this.props;
+    
+    firestore
+      .collection('games')
+      .doc(gameId)
+      .collection('doctors')
+      .doc(doctorId)
+      .update({
+        queue: firebase.firestore.FieldValue.arrayRemove(queue[0]),
+        currentPatient: queue[0],
+      })
+      .then(() => {
+        this.setState({ currentPatient: queue[0], queue: queue.slice(1) });
+      });
   }
 
   cancelTreatment() {
+    const firestore = this.props.firebase.db;
     const { queue, currentPatient } = this.state;
-    this.setState({
-      currentPatient: null,
-      queue: [currentPatient, ...queue],
-    })
+    const { gameId, doctorId } = this.props;
+
+    const newCurrentPatient = null;
+    const newQueue = [currentPatient, ...queue];
+
+    return firestore
+      .collection('games')
+      .doc(gameId)
+      .collection('doctors')
+      .doc(doctorId)
+      .update({
+        currentPatient: newCurrentPatient,
+        queue: firebase.firestore.FieldValue.arrayUnion(currentPatient),
+      })
+      .then(() => {
+        this.setState({
+          currentPatient: newCurrentPatient,
+          queue: newQueue,
+        });
+      });
   }
 
   finishTreatment() {
