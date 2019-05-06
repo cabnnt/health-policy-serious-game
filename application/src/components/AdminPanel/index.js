@@ -1,22 +1,16 @@
-import TimeInput from 'material-ui-time-picker';
 import React from 'react';
 import NumberFormat from 'react-number-format';
-import { min, locale } from 'moment';
 import { withFirebase } from '../Firebase';
-import FormStyles from '../../styles/formStyles';
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { TextField } from '@material-ui/core';
-import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
 import numeral from 'numeral'
-const moment = require('moment');
+import Paper from '@material-ui/core/Paper';
+
 const INITIAL_STATE = {
   timeRemaining: null,
   name: "",
@@ -31,11 +25,11 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
+    margin: theme.spacing.unit,
   },
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
-
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -57,7 +51,6 @@ class AdminPanel extends React.Component{
     
       this.state = { ...INITIAL_STATE };
       this.handleMenuChange = this.handleMenuChange.bind(this);
-      this.onDateChange = this.onDateChange.bind(this);
     }
     handlePriceChange = (event)=>{
       event.persist();
@@ -80,30 +73,23 @@ class AdminPanel extends React.Component{
       this.setState({name:event.target.value});
       
     }
-    onDateChange = (event)=>{
-      event.persist();
-      this.setState({startTime: event.target.value})
-    }
     onDoctorChange = (event)=>{
       this.setState({numberOfDoctors: event.target.value})
     }
     render() {
       const { classes } = this.props;
-      const { firebase } = this.props;
       return (
-        <div>
-        
-        <FormControl className={classes.formControl}>
-        <InputLabel style={{marginLeft:10, marginTop:10}}>Round-Time</InputLabel>
+        <Paper className={classes.root}>
+          <FormControl className={classes.formControl}>
+            <InputLabel style={{marginLeft:10, marginTop:10}}>Round-Time</InputLabel>
             <Select
               style={{marginLeft:10}}
               value={this.state.time}
               onChange={this.handleMenuChange}
-              placeholder={"Foo"}
               inputProps={
                 {
-                name: 'time',
-                id: 'time-simple',
+                  name: 'time',
+                  id: 'time-simple',
                 }
               }
             >
@@ -114,28 +100,16 @@ class AdminPanel extends React.Component{
               <MenuItem value={75}>75 minutes</MenuItem>
               <MenuItem value={90}>90 minutes</MenuItem>
             </Select>
-          <TextField
-              style={{marginTop:0}}
-              id="outlined-name"
-              label="Name of Game"
-              className={classes.textField}
-              value={this.state.name}
-              onChange={(this.handleNameChange)}
-              margin="normal"
-              variant="standard"
-          />
-
             <TextField
-              id="datetime-local"
-              label="Round Start Time"
-              type="datetime-local"
-              defaultValue={moment().format("YYYY-MM-DDThh:mm")}
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={this.onDateChange}
-              />
+                style={{marginTop:0}}
+                id="outlined-name"
+                label="Name of Game"
+                className={classes.textField}
+                value={this.state.name}
+                onChange={(this.handleNameChange)}
+                margin="normal"
+                variant="standard"
+            />
             <TextField
               id="number"
               label="Number of Doctors"
@@ -176,7 +150,7 @@ class AdminPanel extends React.Component{
             <Button
               type="submit"
               onClick={ this.onSubmit }
-              disabled={ !!this.state.gameId || this.state.time==0 || moment(this.state.startTime) < moment() || this.state.minorCost>this.state.majorCost}
+              disabled={ !!this.state.gameId || this.state.time==0 || this.state.minorCost>this.state.majorCost}
               >
               {
                 this.state.gameId 
@@ -187,18 +161,13 @@ class AdminPanel extends React.Component{
                 }
             </Button>
           </FormControl>
-
-          {
-            moment(this.state.startTime) < moment() ? <div> Sorry the start time is in the past - we can't do that</div> : <div></div>
-          }
-      </div>
+      </Paper>
       )
     }
     onSubmit = async (event) => {
       const { firebase } = this.props;
       let params = {
         name: this.state.name,
-        startTime: moment(this.state.startTime).format("YYYY-MM-DDThh:mm"),
         roundTime: this.state.time,
         numberOfDoctors: this.state.numberOfDoctors,
         minorCost : numeral(this.state.minorCost).value(),

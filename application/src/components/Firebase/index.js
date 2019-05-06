@@ -49,11 +49,9 @@ export default class Firebase {
       name : params.name,
       createdAt: firestore.Timestamp.fromDate(new Date()),
       roundTime : params.roundTime,
-      startTime: params.startTime,
       numberOfDoctors: params.numberOfDoctors,
       minorTreatmentCost:params.minorCost,
       majorTreatmentCost:params.majorCost
-
     });
   }
 
