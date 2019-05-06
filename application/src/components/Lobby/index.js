@@ -35,9 +35,10 @@ class Lobby extends React.Component{
       const firestore = this.props.firebase.db;
       const { search } = location;
       const { gameId } = queryString.parse(search);
-      const gameRequest = firestore.collection('games').doc(gameId);
+      const gameRequest = gameId ? firestore.collection('games').doc(gameId) : null;
 
-      gameRequest
+      if (gameRequest) {
+        gameRequest
         .get()
         .then(gameDocument => {
           const gameExists = !!gameDocument && gameDocument.exists;
@@ -77,6 +78,13 @@ class Lobby extends React.Component{
             });
           }
         });
+      } else {
+        this.setState({
+          gameExists: false,
+          loading: false,
+          isPlayer: false,
+        });
+      }
     }
     
     render() {
