@@ -9,6 +9,14 @@ import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
 import { withRouter } from 'react-router-dom';
 
+const styles = {
+    doctor: {
+        display: 'inline-block',
+        margin: 10,
+        color:"red",
+        backgroundColor:"blue",
+    }
+}
 
 class Lobby extends React.Component{
     constructor(props){
@@ -36,7 +44,7 @@ class Lobby extends React.Component{
           const { authUser } = this.props;
           
           if (authUser && gameExists) {
-            this.doctorsListener = gameRequest
+            gameRequest
               .collection('doctors')
               .get()
               .then(doctorCollection => {
@@ -83,7 +91,7 @@ class Lobby extends React.Component{
               !loading
                 ? gameExists
                   ? isDoctor
-                    ? <TreatmentPanel doctorId={ authUser.id } />
+                    ? <TreatmentPanel gameId={ gameId } doctorId={ authUser.id } />
                     : isPlayer || authUser.role === 'teacher'
                       ? <div>
                           <Countdown gameInfo={ authUser }/>
@@ -91,7 +99,7 @@ class Lobby extends React.Component{
                             gameId={ gameId }
                           />
                         </div>
-                      : <Typography style={{ margin: 5 }} variant='body2'>You haven't joined this game.</Typography>
+                      : <div></div>
                   : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
                 : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
             }
