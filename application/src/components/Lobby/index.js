@@ -44,7 +44,7 @@ class Lobby extends React.Component{
           const { authUser } = this.props;
           
           if (authUser && gameExists) {
-            this.doctorsListener = gameRequest
+            gameRequest
               .collection('doctors')
               .get()
               .then(doctorCollection => {
@@ -91,7 +91,7 @@ class Lobby extends React.Component{
               !loading
                 ? gameExists
                   ? isDoctor
-                    ? <TreatmentPanel doctorId={ authUser.id } />
+                    ? <TreatmentPanel gameId={ gameId } doctorId={ authUser.id } />
                     : isPlayer || authUser.role === 'teacher'
                       ? <div>
                           <Countdown gameInfo={ authUser }/>

@@ -4,6 +4,7 @@ import { withFirebase } from '../Firebase'
 import moment from 'moment'
 import Counter from 'react-countdown-now'
 import { withAuthorization } from '../Authorization/context';
+import {illmatic} from '../../js/stringGen'
 const INITIAL_STATE = {
     timeLeft : 0,
     startTime : 0,
@@ -22,6 +23,7 @@ class Countdown extends React.Component{
         this.state = INITIAL_STATE
         this.firestore = this.props.firebase.db;
         this.timerListener = null;
+        console.log(illmatic())
     }
 
     componentWillUnmount(){
