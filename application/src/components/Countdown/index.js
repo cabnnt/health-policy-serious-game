@@ -23,7 +23,7 @@ class Countdown extends React.Component{
         this.state = INITIAL_STATE
         this.firestore = this.props.firebase.db;
         this.timerListener = null;
-        console.log(illmatic())
+        // console.log(illmatic())
     }
 
     componentWillUnmount(){
@@ -49,6 +49,7 @@ class Countdown extends React.Component{
         })
     }
     render(){
+        //TODO: when time expires remove people from game in DB
         return this.state.isStarted ? (<div>Time Remaining : <Counter date={this.state.startTime + this.state.timeLeft*PRODUCTION_SECONDS} renderer = {renderer}/></div>) : <span>Please wait until the game starts</span>;
     }
 }

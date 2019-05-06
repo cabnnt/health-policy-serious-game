@@ -4,7 +4,7 @@ import { withAuthorization } from '../../Authorization/context';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../../Firebase';
 import firebase from 'firebase';
-
+import {illmatic} from '../../js/stringGen'
 const JoinGameButton = (props) => {
   const { authUser, history, gameId } = props;
 
@@ -33,17 +33,24 @@ const JoinGameButton = (props) => {
                 queue: []
               })
           }
-          firestore
-            .collection('users')
-            .doc(authUser.id)
-            .update({
-              currentGame: gameId
-            })
-          authUser.currentGame = gameId;
-          history.push(`game?gameId=${gameId}`);
+          else{
+            console.log("Else in join game button");
+            firestore
+              .collection('users')
+              .doc(authUser.id)
+              .update({
+                currentGame: gameId,
+                infectionString: infection[0],
+                isSick: infection[1]
+              }).then(()=>{
+                authUser.currentGame = gameId;
+                history.push(`game?gameId=${gameId}`);
+              })
+          }
         }).catch(err => {
           console.error(`Error on update of game ${gameId} for player ${authUser.username}: ${err}`);
         });
+      
     }
   }
   // We can set this up on the button once we are done testing:
