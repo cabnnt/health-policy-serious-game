@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withFirebase } from '../Firebase';
 import TreatmentButton from './TreatmentButton';
+import RecommendationPanel from './RecommendationPanel';
 
 class TreatmentPanel extends Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class TreatmentPanel extends Component {
     this.state = {
       doctor: null,
       currentPatient: null,
+      diagnosis: null,
       queue: [],
     }
     this.doctorListener = null;
@@ -49,6 +51,18 @@ class TreatmentPanel extends Component {
     })
   }
 
+  finishTreatment() {
+    const { diagnosis } = this.state;
+    
+    if (diagnosis) {
+      console.log(diagnosis);
+    }
+  }
+
+  handleDiagnosisChange(diagnosis) {
+    this.setState({ diagnosis });
+  }
+
   componentWillUnmount() {
     const { currentPatient } = this.state;
     this.doctorListener && this.doctorListener();
@@ -59,13 +73,15 @@ class TreatmentPanel extends Component {
   }
 
   render() {
-    const { doctor, queue, currentPatient } = this.state;
-    console.log(this.state);
+    const { doctor, queue, currentPatient, diagnosis } = this.state;
 
     return(
       doctor
       ? 
         <div>
+          <Typography style={{ margin: 5 }} variant='body2'>
+            There are currently { queue.length } patient(s) waiting to see you.
+          </Typography>
           <Typography style={{ margin: 5 }} variant='body2'>
             {
               currentPatient
@@ -73,21 +89,19 @@ class TreatmentPanel extends Component {
                 : `You are not currently treating anybody.`
             }
           </Typography>
-          <Typography style={{ margin: 5 }} variant='body2'>
-            There are currently { queue.length } patient(s) waiting to see you.
-          </Typography>
           {
             currentPatient
               ? <div>
+                  <RecommendationPanel onSelectionChange={ this.handleDiagnosisChange.bind(this) }/>
                   <TreatmentButton
                     buttonText={ 'Cancel treatment' }
                     onClick={ this.cancelTreatment.bind(this) }
-                    disabled={ false }
+                    disabled={ !!currentPatient }
                   />
                   <TreatmentButton
                     buttonText={ 'Finish treatment' }
-                    onClick={() => console.log('finish')}
-                    disabled={ false }
+                    onClick={ this.finishTreatment.bind(this) }
+                    disabled={ !!diagnosis }
                   />
                 </div>
               : <TreatmentButton
