@@ -26,6 +26,8 @@ class Lobby extends React.Component{
         gameExists: false,
         isPlayer: false,
         isDoctor: false,
+        isSick : false,
+        infectionString : "",
       }
       this.doctors = [];
     }
@@ -68,7 +70,16 @@ class Lobby extends React.Component{
             ? gameDocument.exists && gameDocument.data()
             : null;
           const isPlayer = players ? players.includes(this.props.authUser.username) : false;
-
+          firestore
+          .collection('users')
+          .doc('bE5ewAxAKMNZ2o0mYMyg')
+          .get()
+          .then(record=>{
+            this.setState({
+              isSick : record.get('isSick'),
+              infectionString : record.get('infectionString')
+            })
+          })
           if (loading) {
             this.setState({
               gameExists: gameExists,
@@ -77,6 +88,7 @@ class Lobby extends React.Component{
             });
           }
         });
+
     }
     
     render() {
@@ -96,11 +108,13 @@ class Lobby extends React.Component{
                         <TreatmentPanel gameId={ gameId } doctorId={ authUser.id } />
                       </div>
                     : isPlayer || authUser.role === 'teacher'
-                      ? <div>
+                    ? <div>
+                          <Typography style={{ margin: 5 }} variant='body2' color='error'>Your name: {authUser.username}</Typography>
                           <Countdown gameInfo={ authUser }/>
                           <DoctorDisplayList
                             gameId={ gameId }
                           />
+                          <Typography style={{ margin: 5 }} variant='body2' color='error'>Your string: {this.state.infectionString}</Typography>
                         </div>
                       : <div></div>
                   : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>

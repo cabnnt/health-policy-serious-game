@@ -4,7 +4,7 @@ import { withAuthorization } from '../../Authorization/context';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../../Firebase';
 import firebase from 'firebase';
-
+import {illmatic} from '../../js/stringGen'
 const JoinGameButton = (props) => {
   const { authUser, history, gameId } = props;
 
@@ -18,6 +18,7 @@ const JoinGameButton = (props) => {
       const players = gameData.players;
       const numberOfDoctors = parseInt(gameData.numberOfDoctors);
       const numberOfPlayers = players ? players.length : 0;
+      let infection = illmatic() // TODO add configureable options from AdminPanel
       game
         .update({
           players: firebase.firestore.FieldValue.arrayUnion(authUser.username)
@@ -33,17 +34,22 @@ const JoinGameButton = (props) => {
                 queue: []
               })
           }
-          firestore
+          await firestore
             .collection('users')
             .doc(authUser.id)
             .update({
-              currentGame: gameId
+              currentGame: gameId,
+              isSick: infection[0],
+              infectionString: infection[1]
+            }).then(()=>{
+              authUser.currentGame = gameId;
+              history.push(`game?gameId=${gameId}`);
+
             })
-          authUser.currentGame = gameId;
-          history.push(`game?gameId=${gameId}`);
         }).catch(err => {
           console.error(`Error on update of game ${gameId} for player ${authUser.username}: ${err}`);
         });
+      
     }
   }
   // We can set this up on the button once we are done testing:
