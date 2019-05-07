@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { withFirebase } from '../Firebase';
 import TreatmentButton from './TreatmentButton';
 import RecommendationPanel from './RecommendationPanel';
+import { finished } from 'stream';
 
 class TreatmentPanel extends Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class TreatmentPanel extends Component {
       currentPatient: null,
       diagnosis: null,
       queue: [],
+      finishedTreatment: false,
+      assignedTreatment: false,
     }
     this.doctorListener = null;
   }
@@ -35,13 +38,24 @@ class TreatmentPanel extends Component {
         const queue = doctor
           ? doctor.queue
           : [];
-        this.setState({ doctor, queue });
+        const { currentPatient } = this.state;
+        const finishedTreatment = !!(doctor &&
+          doctor.results &&
+          doctor.results[currentPatient] &&
+          doctor.results[currentPatient].selectedTreatment);
+
+        this.setState({ doctor, queue, finishedTreatment });
+
+        if (finishedTreatment) {
+          this.setState({ currentPatient: null, startedTreatment: false, assignedTreatment: false });
+        }
       });
+    
   }
 
   startTreatment() {
     const firestore = this.props.firebase.db;
-    const { queue, currentPatient } = this.state;
+    const { queue } = this.state;
     const { gameId, doctorId } = this.props;
     
     firestore
@@ -54,7 +68,7 @@ class TreatmentPanel extends Component {
         currentPatient: queue[0],
       })
       .then(() => {
-        this.setState({ currentPatient: queue[0], queue: queue.slice(1) });
+        this.setState({ startedTreatment: true, currentPatient: queue[0], queue: queue.slice(1) });
       });
   }
 
@@ -89,6 +103,7 @@ class TreatmentPanel extends Component {
         })
         .then(() => {
           this.setState({
+            startedTreatment: false,
             currentPatient: newCurrentPatient,
             queue: newQueue,
           })
@@ -96,9 +111,9 @@ class TreatmentPanel extends Component {
     }
   }
 
-  finishTreatment() {
+  assignTreatment() {
     const { gameId, doctorId } = this.props;
-    const { diagnosis, currentPatient, queue } = this.state;
+    const { diagnosis, currentPatient } = this.state;
     const firestore = this.props.firebase.db;
     const doctorReference = gameId && doctorId && diagnosis
       ? firestore
@@ -118,23 +133,21 @@ class TreatmentPanel extends Component {
                 transaction.set(
                   doctorReference,
                   {
-                    diagnoses: {
-                      [currentPatient]: diagnosis
+                    results: {
+                      [currentPatient]: {
+                        diagnosis: diagnosis,
+                      }
                     },
                   },
                   {
                     merge: true
                   },
                 );
-                transaction.update(
-                  doctorReference,
-                  {
-                    currentPatient: null,
-                  }
-                );
               }
             })
-        });
+        }).then(
+          this.setState({ assignedTreatment: true })
+        )
     }
   }
 
@@ -145,14 +158,10 @@ class TreatmentPanel extends Component {
   componentWillUnmount() {
     const { currentPatient } = this.state;
     this.doctorListener && this.doctorListener();
-    
-    if (currentPatient) {
-      this.cancelTreatment();
-    }
   }
 
   render() {
-    const { doctor, queue, currentPatient } = this.state;
+    const { doctor, queue, currentPatient, startedTreatment, assignedTreatment, finishedTreatment } = this.state;
 
     return(
       doctor
@@ -169,7 +178,7 @@ class TreatmentPanel extends Component {
             }
           </Typography>
           {
-            currentPatient
+            startedTreatment
               ? <div>
                   <RecommendationPanel onSelectionChange={ this.handleDiagnosisChange.bind(this) }/>
                   <TreatmentButton
@@ -177,10 +186,18 @@ class TreatmentPanel extends Component {
                     onClick={ this.cancelTreatment.bind(this) }
                     disabled={ !currentPatient }
                   />
-                  <TreatmentButton
-                    buttonText={ 'Finish treatment' }
-                    onClick={ this.finishTreatment.bind(this) }
-                  />
+                  {
+                    assignedTreatment && !finishedTreatment
+                      ? <TreatmentButton
+                          buttonText={ 'Awaiting patient response...' }
+                          onClick={ () => {} }
+                          disabled={ true }
+                        />
+                      : <TreatmentButton
+                          buttonText={ 'Assign treatment' }
+                          onClick={ this.assignTreatment.bind(this) }
+                        />
+                  }
                 </div>
               : <TreatmentButton
                   buttonText={ 'Next patient' }

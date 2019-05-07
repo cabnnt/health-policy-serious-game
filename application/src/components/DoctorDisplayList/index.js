@@ -113,32 +113,30 @@ class DoctorDisplayList extends Component {
 
   render() {
     const { gameId, doctors, currentQueueDoctorId, loaded, numberOfDoctors } = this.state;
-    const { authUser } = this.props;
+    const { authUser, onFinishTreatment } = this.props;
     const patientId = authUser ? authUser.id : null;
     const treating = doctors.find(doctor => { return doctor.currentPatient === authUser.id; });
 
     return (
       loaded
-        ? doctors.length === 0 || doctors.length < numberOfDoctors
+        ? (doctors.length === 0 || doctors.length < numberOfDoctors)
           ? <Typography style={{ margin: 5 }} variant='body2'>
               Waiting on { numberOfDoctors - doctors.length } doctor(s) to join the game ({ doctors.length } already joined)...
             </Typography>
-          : authUser
-            ? treating || (treating.diagnosis && Object.keys(treating.diagnosis).includes(patientId))
-                ? <PatientDiagnosisPanel doctor={ treating } patientId={ patientId } gameId={ gameId } />
-                : doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
-                    return (
-                      <DoctorDisplay
-                        key={ doctor.id }
-                        selected={ currentQueueDoctorId === doctor.id }
-                        doctor={ doctor }
-                        gameId={ gameId }
-                        onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) }
-                        onExitQueue={ this.leaveQueue.bind(this, gameId, doctor.id, patientId, true) }
-                      />
-                    );
-                  })
-            : null
+          : treating
+            ? <PatientDiagnosisPanel doctor={ treating } patientId={ patientId } gameId={ gameId } onFinishTreatment={ onFinishTreatment } />
+            : doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
+                return (
+                  <DoctorDisplay
+                    key={ doctor.id }
+                    selected={ currentQueueDoctorId === doctor.id }
+                    doctor={ doctor }
+                    gameId={ gameId }
+                    onChangeQueue={ this.onChangeQueue.bind(this, gameId, doctor.id, patientId) }
+                    onExitQueue={ this.leaveQueue.bind(this, gameId, doctor.id, patientId, true) }
+                  />
+                );
+              })
         : <Typography style={{ margin: 5 }} variant='body2'>Loading doctors...</Typography>
     )
   }

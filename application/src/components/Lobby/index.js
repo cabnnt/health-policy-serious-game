@@ -26,6 +26,7 @@ class Lobby extends React.Component{
         gameExists: false,
         isPlayer: false,
         isDoctor: false,
+        finishedTreatment: false,
       }
       this.doctors = [];
     }
@@ -43,7 +44,6 @@ class Lobby extends React.Component{
         .then(gameDocument => {
           const gameExists = !!gameDocument && gameDocument.exists;
           const { authUser } = this.props;
-          
           if (authUser && gameExists) {
             gameRequest
               .collection('doctors')
@@ -86,9 +86,15 @@ class Lobby extends React.Component{
         });
       }
     }
+
+    onFinishTreatment() {
+      this.setState({
+        finishedTreatment: true,
+      })
+    }
     
     render() {
-      const { loading, gameExists, isDoctor, isPlayer } = this.state;
+      const { loading, gameExists, isDoctor, isPlayer, finishedTreatment } = this.state;
       const { location, authUser } = this.props;
       const { gameId } = queryString.parse(location.search);
 
@@ -101,13 +107,16 @@ class Lobby extends React.Component{
                   ? isDoctor
                     ? <div>
                         <Countdown gameInfo={authUser}/>
-                        <TreatmentPanel gameId={ gameId } doctorId={ authUser.id } />
+                        <TreatmentPanel
+                          gameId={ gameId }
+                          doctorId={ authUser.id } />
                       </div>
                     : isPlayer || authUser.role === 'teacher'
                       ? <div>
                           <Countdown gameInfo={ authUser }/>
                           <DoctorDisplayList
                             gameId={ gameId }
+                            onFinishTreatment={ this.onFinishTreatment.bind(this) }
                           />
                         </div>
                       : <div></div>

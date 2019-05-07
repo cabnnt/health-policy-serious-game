@@ -21,5 +21,3 @@ export function illmatic(cutoff, size, posChar, negChar) {
     }
     return [sickString, isSick]
 }
-
-console.log(illmatic())

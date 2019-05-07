@@ -23,7 +23,6 @@ class Countdown extends React.Component{
         this.state = INITIAL_STATE
         this.firestore = this.props.firebase.db;
         this.timerListener = null;
-        console.log(illmatic())
     }
 
     componentWillUnmount(){
@@ -35,9 +34,7 @@ class Countdown extends React.Component{
         .collection('games')
         .onSnapshot(doc=>{
             doc.forEach(element => {
-                console.log(element.get('startTime'))
                 if(element.id === gameInfo.currentGame){
-                    console.log(element.get('startTime'))
                     let startTime = moment(element.get('startTime').toDate())
                     let timeLeft = element.get('roundTime')
                     this.setState({startTime,timeLeft})

@@ -54,14 +54,11 @@ class AdminPanel extends React.Component{
     }
     handlePriceChange = (event)=>{
       event.persist();
-      console.log(event);
       
       this.setState({
         minorCost: event.target.value,
         majorCost: event.target.value
       })
-      console.log(typeof this.state.minorCost);
-      console.log(typeof this.state.majorCost);
       
     }
     handleMenuChange = (event)=>{
