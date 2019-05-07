@@ -159,7 +159,7 @@ class PatientDiagnosisPanel extends Component {
           >
             Could not find associated doctor.
           </Typography>)
-      : <p>You're done! 🎉</p>
+      : <Paper style={{ width: '15%', maxWidth: 150, margin: 10, minHeight: 20 }}><Typography align='center' style={{ margin: 'inherit' }} variant='h6'>You're done!<br />🎉</Typography></Paper>
     )
   }
 }

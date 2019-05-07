@@ -48,9 +48,9 @@ class Countdown extends React.Component{
         })
     }
     render(){
-        const style = { margin: 10, maxWidth: 200, minHeight: 15 };
+        const style = { margin: 10, width: '15%', maxWidth: 150, minHeight: 15 };
         //TODO: when time expires remove people from game in DB
-        return this.state.isStarted ? (<Paper style={ style }><Typography style={{ margin: '0px 5px' }}>Time remaining:</Typography><div style={{ width: '75%', margin: '0 auto' }}><Counter date={this.state.startTime + this.state.timeLeft*PRODUCTION_SECONDS} renderer={renderer}/></div></Paper>) : <Paper style={ style }>Please wait until the game starts</Paper>;
+        return this.state.isStarted ? (<Paper style={ style }><Typography style={{ margin: '0px 5px' }} color='textSecondary'>Time remaining:</Typography><div style={{ width: '75%', margin: '0 auto' }}><Counter date={this.state.startTime + this.state.timeLeft*PRODUCTION_SECONDS} renderer={renderer}/></div></Paper>) : <Paper style={ style }>Please wait until the game starts</Paper>;
     }
 }
 export default withFirebase(Countdown);

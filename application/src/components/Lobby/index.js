@@ -131,7 +131,7 @@ class Lobby extends React.Component{
               ? gameExists
               ? isDoctor
               ? <div>
-                        <Typography style={{ margin: 5 }} variant='body2' color='error'>Your name: {authUser.username}</Typography>
+                        <Typography style={{ margin: 5 }} variant='body2' color='textSecondary'>Your name: {authUser.username}</Typography>
                         <Countdown gameInfo={authUser}/>
                         <TreatmentPanel
                           gameId={ gameId }
@@ -140,13 +140,15 @@ class Lobby extends React.Component{
                       </div>
                     : isPlayer || authUser.role === 'teacher'
                     ? <div>
-                          <Typography style={{ margin: 5 }} variant='body2' color='error'>Your name: {authUser.username}</Typography>
+                          <Typography style={{ margin: 5 }} variant='body2' color='textSecondary'>Your name: {authUser.username}</Typography>
                           <Countdown gameInfo={ authUser }/>
                           <DoctorDisplayList
                             gameId={ gameId }
                             onFinishTreatment={ this.onFinishTreatment.bind(this) }
                           />
-                          <Typography style={{ margin: 5 }} variant='body2' color='error'>Your string: {this.state.infectionString}</Typography>
+                          { authUser.role !== 'teacher'
+                            ? <Typography style={{ margin: 5 }} variant='body2' color='textPrimary'>Your health string: {this.state.infectionString}</Typography>
+                            : null }
                         </div>
                       : <div></div>
                   : <Typography style={{ margin: 5 }} variant='body2' color='error'>There is no game with the provided ID.</Typography>
