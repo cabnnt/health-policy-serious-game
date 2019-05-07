@@ -61,7 +61,8 @@ class PatientDiagnosisPanel extends Component {
           .set({
             results: {
               [patientId]: {
-                selectedTreatment: treatment
+                selectedTreatment: treatment,
+                treated: (treatment !== 'none'),
               }
             }
           },
@@ -81,9 +82,16 @@ class PatientDiagnosisPanel extends Component {
       doctor.results &&
       doctor.results[patientId] &&
       doctor.results[patientId].diagnosis;
+    const finished = doctor &&
+      doctor.results &&
+      doctor.results[patientId] &&
+      doctor.results[patientId].treated;
+    console.log('finished:', finished);
+    console.log('doctor:', doctor);
 
     return(
-      doctor
+      !finished
+      ? (doctor
         ? diagnosis
           ? <div style={{ display: 'flex', alignItems: 'flex-start' }}>
               <Paper style={{ margin: 10, maxWidth: 400, height: '90%' }}>
@@ -139,7 +147,8 @@ class PatientDiagnosisPanel extends Component {
             color='error'
           >
             Could not find associated doctor.
-          </Typography>
+          </Typography>)
+      : <p>You're done! 🎉</p>
     )
   }
 }

@@ -38,16 +38,24 @@ class TreatmentPanel extends Component {
         const queue = doctor
           ? doctor.queue
           : [];
-        const { currentPatient } = this.state;
+        const currentPatient = doctor ? doctor.currentPatient : this.state.currentPatient;
         const finishedTreatment = !!(doctor &&
           doctor.results &&
           doctor.results[currentPatient] &&
           doctor.results[currentPatient].selectedTreatment);
+        const assignedTreatment = !!(
+          doctor &&
+          doctor.results &&
+          doctor.results[currentPatient] &&
+          doctor.results[currentPatient].diagnosis
+        )
 
-        this.setState({ doctor, queue, finishedTreatment });
+        this.setState({ doctor, queue, currentPatient, finishedTreatment, assignedTreatment });
 
         if (finishedTreatment) {
           this.setState({ currentPatient: null, startedTreatment: false, assignedTreatment: false });
+        } else if (!finishedTreatment && (assignedTreatment || currentPatient)) {
+          this.setState({ startedTreatment: true });
         }
       });
     
@@ -156,7 +164,6 @@ class TreatmentPanel extends Component {
   }
 
   componentWillUnmount() {
-    const { currentPatient } = this.state;
     this.doctorListener && this.doctorListener();
   }
 

@@ -115,7 +115,13 @@ class DoctorDisplayList extends Component {
     const { gameId, doctors, currentQueueDoctorId, loaded, numberOfDoctors } = this.state;
     const { authUser, onFinishTreatment } = this.props;
     const patientId = authUser ? authUser.id : null;
-    const treating = doctors.find(doctor => { return doctor.currentPatient === authUser.id; });
+    const treating = doctors.find(doctor => {
+      return (
+        doctor.currentPatient === authUser.id)
+          || !!(doctor && doctor.results && Object.keys(doctor.results).includes(authUser.id));
+    });
+
+    console.log('DoctorDisplayList doctors:', doctors);
 
     return (
       loaded
