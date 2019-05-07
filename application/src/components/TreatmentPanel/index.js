@@ -62,10 +62,11 @@ class TreatmentPanel extends Component {
   }
 
   startTreatment() {
+    
     const firestore = this.props.firebase.db;
     const { queue } = this.state;
     const { gameId, doctorId } = this.props;
-    
+
     firestore
       .collection('games')
       .doc(gameId)
@@ -77,6 +78,13 @@ class TreatmentPanel extends Component {
       })
       .then(() => {
         this.setState({ startedTreatment: true, currentPatient: queue[0], queue: queue.slice(1) });
+
+      }).then(()=>{
+        firestore.collection('users').doc(this.state.currentPatient).get().then(doc=>{
+          this.setState({
+            patientString : doc.get('infectionString')
+          })
+        })
       });
   }
 
@@ -182,11 +190,12 @@ class TreatmentPanel extends Component {
 
   render() {
     const { doctor, queue, currentPatient, startedTreatment, assignedTreatment, finishedTreatment } = this.state;
-
+    const firestore = this.props.firebase.db
+    let patientString = null
     return(
       doctor
       ? 
-        <div>
+      <div>
           <Paper style={{ margin: 10, maxWidth: 350, width: '40%' }}>
             <Typography style={{ margin: 5 }} variant='body2'>
               There are currently { queue ? queue.length : -1 } patient(s) waiting to see you.
@@ -194,8 +203,18 @@ class TreatmentPanel extends Component {
             <Typography style={{ margin: 5 }} variant='body2'>
               {
                 currentPatient
-                  ? `You are currently treating: ${currentPatient}.`
-                  : `You are not currently treating anybody.`
+                ? `You are currently treating: ${currentPatient}.`
+                : `You are not currently treating anybody.`
+              }
+            </Typography>
+            <Typography style={{margin:5}} variant='body2' color='textSecondary'>
+              {
+                currentPatient ? `The patient string is :` : null
+              }
+            </Typography>
+            <Typography style={{ margin: 5 }} variant='body2' color='textPrimary'>
+              {
+                currentPatient ? `${this.state.patientString}.` : null
               }
             </Typography>
           </Paper>
