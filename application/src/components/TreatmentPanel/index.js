@@ -7,6 +7,7 @@ import { withFirebase } from '../Firebase';
 import TreatmentButton from './TreatmentButton';
 import RecommendationPanel from './RecommendationPanel';
 import { finished } from 'stream';
+import Paper from '@material-ui/core/Paper';
 
 class TreatmentPanel extends Component {
   constructor(props) {
@@ -186,16 +187,18 @@ class TreatmentPanel extends Component {
       doctor
       ? 
         <div>
-          <Typography style={{ margin: 5 }} variant='body2'>
-            There are currently { queue ? queue.length : -1 } patient(s) waiting to see you.
-          </Typography>
-          <Typography style={{ margin: 5 }} variant='body2'>
-            {
-              currentPatient
-                ? `You are currently treating: ${currentPatient}.`
-                : `You are not currently treating anybody.`
-            }
-          </Typography>
+          <Paper style={{ margin: 10, maxWidth: 350, width: '40%' }}>
+            <Typography style={{ margin: 5 }} variant='body2'>
+              There are currently { queue ? queue.length : -1 } patient(s) waiting to see you.
+            </Typography>
+            <Typography style={{ margin: 5 }} variant='body2'>
+              {
+                currentPatient
+                  ? `You are currently treating: ${currentPatient}.`
+                  : `You are not currently treating anybody.`
+              }
+            </Typography>
+          </Paper>
           {
             startedTreatment
               ? <div>
