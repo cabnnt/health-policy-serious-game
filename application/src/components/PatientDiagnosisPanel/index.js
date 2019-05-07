@@ -75,7 +75,7 @@ class PatientDiagnosisPanel extends Component {
   }
 
   render() {
-    const { doctor, gameId, patientId, onFinishTreatment } = this.props;
+    const { doctor, gameId, patientId } = this.props;
     const { majorTreatmentCost, minorTreatmentCost } = this.state;
     const diagnosis = doctor && 
       doctor.results &&
@@ -127,7 +127,6 @@ class PatientDiagnosisPanel extends Component {
                 </Paper>
                 <br />
               </div>
-
           : <Typography
               style={{ margin: 5 }}
               variant='body2'

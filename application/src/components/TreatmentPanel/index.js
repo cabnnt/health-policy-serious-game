@@ -98,8 +98,8 @@ class TreatmentPanel extends Component {
                   currentPatient: newCurrentPatient,
                   queue: newQueue,
                 })
-              }
-            });
+            }
+          });
         })
         .then(() => {
           this.setState({
@@ -184,7 +184,7 @@ class TreatmentPanel extends Component {
                   <TreatmentButton
                     buttonText={ 'Cancel treatment' }
                     onClick={ this.cancelTreatment.bind(this) }
-                    disabled={ !currentPatient }
+                    disabled={ assignedTreatment && !finishedTreatment }
                   />
                   {
                     assignedTreatment && !finishedTreatment

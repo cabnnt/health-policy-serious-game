@@ -7,7 +7,7 @@ import TreatmentPanel from '../TreatmentPanel';
 import Typography from '@material-ui/core/Typography';
 import { withAuthorization } from '../Authorization/context';
 import { withFirebase } from '../Firebase';
-import { withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { illmatic } from '../../js/stringGen';
 
 const styles = {
@@ -30,6 +30,7 @@ class Lobby extends React.Component{
         finishedTreatment: false,
         isSick : false,
         infectionString : "",
+        redirect: false,
       }
       this.doctors = [];
     }
@@ -66,35 +67,38 @@ class Lobby extends React.Component{
         })
         .then(async () => {
           const { authUser } = this.props
-          console.log(authUser)
-          const { loading } = this.state;
-          const gameDocument = await gameRequest.get();
-          const gameExists = !!gameDocument && gameDocument.exists;
-          const infection = await illmatic();
-          console.log(infection)
-          const { players } = gameDocument
-            ? gameDocument.exists && gameDocument.data()
-            : null;
-          const isPlayer = players ? players.includes(this.props.authUser.username) : false;
-          console.log("finna make this entry")
-          firestore
-          .collection('users')
-          .doc(authUser.id)
-          .update({
-            infectionString : infection[0],
-            isSick : infection[1]
-          }).then(()=>{
-            this.setState({
-              infectionString: infection[0],
-              isSick: infection[1]
-            })
-          })
-          if (loading) {
-            this.setState({
-              gameExists: gameExists,
-              loading: false,
-              isPlayer: isPlayer
-            });
+          if (authUser) {
+            const { loading } = this.state;
+            const gameDocument = await gameRequest.get();
+            const gameExists = !!gameDocument && gameDocument.exists;
+            const infection = await illmatic();
+            
+            const { players } = gameDocument
+              ? gameDocument.exists && gameDocument.data()
+              : null;
+            const isPlayer = players ? players.includes(this.props.authUser.username) : false;
+          
+            firestore
+              .collection('users')
+              .doc(authUser.id)
+              .update({
+                infectionString : infection[0],
+                isSick : infection[1]
+              }).then(()=>{
+                this.setState({
+                  infectionString: infection[0],
+                  isSick: infection[1]
+                })
+              })
+              if (loading) {
+                this.setState({
+                  gameExists: gameExists,
+                  loading: false,
+                  isPlayer: isPlayer
+                });
+              }
+          } else {
+            this.setState({ redirect: true });
           }
         });
       } else {
@@ -146,7 +150,7 @@ class Lobby extends React.Component{
                 : <Typography style={{ margin: 5 }} variant='body2'>Loading lobby...</Typography>
             }
           </Paper>
-          : null
+          : <Redirect to='/home'/>
       )
     }
 }
