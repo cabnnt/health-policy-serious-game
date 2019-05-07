@@ -34,7 +34,6 @@ const JoinGameButton = (props) => {
               })
           }
           else{
-            console.log("Else in join game button");
             firestore
               .collection('users')
               .doc(authUser.id)

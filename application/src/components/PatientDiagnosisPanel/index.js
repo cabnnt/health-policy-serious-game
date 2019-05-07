@@ -86,8 +86,6 @@ class PatientDiagnosisPanel extends Component {
       doctor.results &&
       doctor.results[patientId] &&
       doctor.results[patientId].treated;
-    console.log('finished:', finished);
-    console.log('doctor:', doctor);
 
     return(
       !finished

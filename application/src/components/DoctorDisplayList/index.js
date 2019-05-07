@@ -121,8 +121,6 @@ class DoctorDisplayList extends Component {
           || !!(doctor && doctor.results && Object.keys(doctor.results).includes(authUser.id));
     });
 
-    console.log('DoctorDisplayList doctors:', doctors);
-
     return (
       loaded
         ? (doctors.length === 0 || doctors.length < numberOfDoctors)
