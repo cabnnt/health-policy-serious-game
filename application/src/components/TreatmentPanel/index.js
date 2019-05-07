@@ -35,26 +35,25 @@ class TreatmentPanel extends Component {
         const doctor = doctorDocument && doctorDocument.exists
           ? doctorDocument.data()
           : null;
-        const queue = doctor
-          ? doctor.queue
-          : [];
-        const currentPatient = doctor ? doctor.currentPatient : this.state.currentPatient;
-        const finishedTreatment = !!(doctor &&
-          doctor.results &&
-          doctor.results[currentPatient] &&
-          doctor.results[currentPatient].selectedTreatment);
-        const assignedTreatment = !!(
-          doctor &&
-          doctor.results &&
-          doctor.results[currentPatient] &&
-          doctor.results[currentPatient].diagnosis
-        )
+        const queue = doctor && doctor.queue;
+        const { currentPatient, results } = doctor;
+        const patientResults = results && currentPatient && results[currentPatient];
+        const assignedTreatment = !!(patientResults && patientResults.diagnosis);
+        const finishedTreatment = currentPatient ? !!(
+          patientResults
+            && patientResults.selectedTreatment
+            && patientResults.treated !== false
+        ) : true;
 
-        this.setState({ doctor, queue, currentPatient, finishedTreatment, assignedTreatment });
+        this.setState({ doctor, queue, finishedTreatment, assignedTreatment });
 
         if (finishedTreatment) {
-          this.setState({ currentPatient: null, startedTreatment: false, assignedTreatment: false });
-        } else if (!finishedTreatment && (assignedTreatment || currentPatient)) {
+          doctorRequest
+            .update({ currentPatient: null })
+            .then(() => {
+              this.setState({ currentPatient: null, startedTreatment: false, assignedTreatment: false });
+            })
+        } else if (!finishedTreatment && assignedTreatment) {
           this.setState({ startedTreatment: true });
         }
       });
@@ -112,6 +111,7 @@ class TreatmentPanel extends Component {
         .then(() => {
           this.setState({
             startedTreatment: false,
+            assignedTreatment: false,
             currentPatient: newCurrentPatient,
             queue: newQueue,
           })
@@ -121,7 +121,7 @@ class TreatmentPanel extends Component {
 
   assignTreatment() {
     const { gameId, doctorId } = this.props;
-    const { diagnosis, currentPatient } = this.state;
+    const { diagnosis, currentPatient, doctor } = this.state;
     const firestore = this.props.firebase.db;
     const doctorReference = gameId && doctorId && diagnosis
       ? firestore
@@ -137,7 +137,7 @@ class TreatmentPanel extends Component {
           return transaction
             .get(doctorReference)
             .then(doctorDocument => {
-              if (doctorDocument.exists) {
+              if (doctorDocument.exists && (doctor && doctor.results && doctor.results[currentPatient] && doctor.results[currentPatient].treated) !== false) {
                 transaction.set(
                   doctorReference,
                   {
@@ -150,6 +150,18 @@ class TreatmentPanel extends Component {
                   {
                     merge: true
                   },
+                );
+              } else if (doctorDocument.exists && (doctor && doctor.results && doctor.results[currentPatient] && doctor.results[currentPatient].treated) === false) {
+                let { results } = { ...doctor };
+                delete results[currentPatient];
+                results[currentPatient] = { diagnosis: diagnosis };
+
+                transaction.set(
+                  doctorReference,
+                  {
+                    results: results,
+                  },
+                  { merge: true }
                 );
               }
             })

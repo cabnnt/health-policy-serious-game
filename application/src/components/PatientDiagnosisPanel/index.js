@@ -51,41 +51,54 @@ class PatientDiagnosisPanel extends Component {
       : null
 
     if (doctorReference) {
-      if (['none', 'minor', 'major'].includes(treatment)) {
+      console.log('am i getting here?');
+      if (['minor', 'major'].includes(treatment)) {
         doctorReference
           .update({
-            currentPatient: null,
             queue: firebase.firestore.FieldValue.arrayRemove(patientId),
+          }).then(() => {
+            doctorReference
+              .set({
+                results: {
+                  [patientId]: {
+                    selectedTreatment: treatment,
+                    treated: (treatment !== 'none'),
+                  }
+                }
+              },
+              {
+                merge: true,
+              });
           })
+      } else if (treatment === 'none') {
         doctorReference
-          .set({
-            results: {
-              [patientId]: {
-                selectedTreatment: treatment,
-                treated: (treatment !== 'none'),
-              }
-            }
-          },
-          {
-            merge: true,
-          });
-
-          onFinishTreatment();
+          .update({
+            queue: firebase.firestore.FieldValue.arrayRemove(patientId),
+          }).then(() => {
+            doctorReference
+              .update({
+                currentPatient: null,
+                results: {
+                  [patientId]: {
+                    selectedTreatment: treatment,
+                    treated: false,
+                  }
+                }
+              })
+          })
       }
+
+      onFinishTreatment();
     }
   }
 
   render() {
     const { doctor, gameId, patientId } = this.props;
+    console.log(doctor);
     const { majorTreatmentCost, minorTreatmentCost } = this.state;
-    const diagnosis = doctor && 
-      doctor.results &&
-      doctor.results[patientId] &&
-      doctor.results[patientId].diagnosis;
-    const finished = doctor &&
-      doctor.results &&
-      doctor.results[patientId] &&
-      doctor.results[patientId].treated;
+    const patientResults = doctor && doctor.results && doctor.results[patientId];
+    const finished = patientResults && patientResults.treated;
+    const diagnosis = patientResults && patientResults.treated === false ? true : patientResults && patientResults.diagnosis;
 
     return(
       !finished

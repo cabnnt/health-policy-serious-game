@@ -121,6 +121,8 @@ class Lobby extends React.Component{
       const { location, authUser } = this.props;
       const { gameId } = queryString.parse(location.search);
 
+      console.log('finished treatment (lobby)', finishedTreatment);
+
       return (
         authUser ?
           <Paper style={{ margin: 10 }}>
@@ -133,7 +135,8 @@ class Lobby extends React.Component{
                         <Countdown gameInfo={authUser}/>
                         <TreatmentPanel
                           gameId={ gameId }
-                          doctorId={ authUser.id } />
+                          doctorId={ authUser.id }
+                          finishedTreatment={ finishedTreatment } />
                       </div>
                     : isPlayer || authUser.role === 'teacher'
                     ? <div>

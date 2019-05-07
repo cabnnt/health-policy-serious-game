@@ -120,6 +120,8 @@ class DoctorDisplayList extends Component {
         doctor.currentPatient === authUser.id)
           || !!(doctor && doctor.results && Object.keys(doctor.results).includes(authUser.id));
     });
+    const rejectedTreatment = treating && treating.results && treating.results[patientId] && (treating.results[patientId].treated === false);
+    console.log('rejected:', rejectedTreatment);
 
     return (
       loaded
@@ -127,7 +129,7 @@ class DoctorDisplayList extends Component {
           ? <Typography style={{ margin: 5 }} variant='body2'>
               Waiting on { numberOfDoctors - doctors.length } doctor(s) to join the game ({ doctors.length } already joined)...
             </Typography>
-          : treating
+          : treating && !rejectedTreatment
             ? <PatientDiagnosisPanel doctor={ treating } patientId={ patientId } gameId={ gameId } onFinishTreatment={ onFinishTreatment } />
             : doctors.sort((d1, d2) => d1.username > d2.username).map((doctor, index) => {
                 return (
