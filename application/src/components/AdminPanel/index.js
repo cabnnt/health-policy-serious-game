@@ -90,6 +90,9 @@ class AdminPanel extends React.Component{
                 }
               }
             >
+              <MenuItem value={1}>1 minute</MenuItem>
+              <MenuItem value={2}>2 minutes</MenuItem>
+              <MenuItem value={5}>5 minutes</MenuItem>
               <MenuItem value={15}>15 minutes</MenuItem>
               <MenuItem value={30}>30 minutes</MenuItem>
               <MenuItem value={45}>45 minutes</MenuItem>
